@@ -1,0 +1,4 @@
+#!/bin/bash
+scp /etc/group root@SERVLogin:/etc/group
+scp /etc/shadow root@SERVLogin:/etc/shadow
+scp /etc/passwd root@SERVLogin:/etc/passwd

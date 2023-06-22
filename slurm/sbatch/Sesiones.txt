@@ -1,0 +1,16 @@
+srun --pty bash --job-name "InteractiveJob" --cpus-per-task 8 --mem-per-cpu 1500 --time 24:00:00
+
+
+salloc -w nodo --exclusive -p particion
+
+salloc -p particion -A account
+
+salloc -w servpwr901 -p particion -t 01:00:00 --gres=gpu:v100:1
+
+A veces me ha pasado que hay que mandar salloc pero no inicia automático pero creo un job
+despues haciendo  srun --pty bash inicia bien 
+
+
+
+
+srun --pty --jobid $JOBID -w $NODEID /bin/bash

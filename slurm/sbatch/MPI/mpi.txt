@@ -1,0 +1,89 @@
+#!/bin/bash
+
+#SBATCH -N 2
+#SBATCH --mem=3G 
+
+##SBATCH -n 20
+#SBATCH --ntasks-per-node=20
+
+
+module load GCCcore/7.3.0
+module load GCC
+#module use --append /opt/ohpc/pub/moduledeps/gnu8
+module load openmpi3/3.1.4
+
+mpirun -np 40  hostname
+##mpirun --use-hwthread-cpus ... Sin probar. 
+##MPi correo por cores y no por hilos peor en caso que queramos que use los hilos como cores
+
+## Con n=20 me coge 19 cores por server , con --ntasks-per-node=20 coge 20 cores por nodo
+
+
+#!/bin/bash
+#
+#SBATCH --job-name=test_mpi
+#SBATCH --output=res_mpi.txt
+#
+#SBATCH --ntasks=4
+#SBATCH --time=10:00
+#SBATCH --mem-per-cpu=100
+
+module load openmpi
+mpirun hello.mpi
+
+
+
+
+#!/bin/bash
+#SBATCH -N 4
+mpirun -np 4 hostname
+
+
+
+#En consola funciona
+# srun -N 2 -n 40 hostname
+
+
+
+#!/bin/bash
+
+#SBATCH -N 2
+#SBATCH -n 40 
+
+srun -N 2 -n 40 hostname
+
+
+srun -n 210  --mpi=openmpi hostname
+
+
+
+
+#SBATCH -N 14
+
+#SBATCH --mem=70G
+
+#SBATCH --ntasks-per-node=10
+
+
+module load GCCcore/7.3.0
+module load GCC
+module use --append /opt/ohpc/pub/moduledeps/gnu8
+module load openmpi3/3.1.4
+
+
+export DIR=$PWD
+
+mkdir -p /data/scratch/UBCN/${DIR}
+
+cp * /data/scratch/UBCN/${DIR}
+
+cd /data/scratch/UBCN/${DIR}
+
+mpirun -np 140 /software/RES/apps/pruebas/vasp.5.4.1/bin/vasp_std
+
+cp {CONTCAR,OUTCAR,XDATCAR,OSZICAR} ${DIR}
+
+cd ${DIR}
+
+rm -r /data/scratch/UBCN/${DIR}
+

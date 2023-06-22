@@ -1,0 +1,4 @@
+
+Ruta
+
+/etc/profile.d/

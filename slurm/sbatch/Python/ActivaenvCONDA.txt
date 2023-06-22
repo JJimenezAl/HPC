@@ -1,0 +1,19 @@
+#!/bin/bash
+#SBATCH --partition=power_std
+#SBATCH --account=acc_ure_power_std
+#Mirar si hace falta exports por no haber activado conda 
+##export PATH=/home/nashpc01/anaconda3/bin:/home/nashpc01/anaconda3/condabin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/ibutils/bin:/home/nashpc01/.local/bin:/home/nashpc01/bin
+source ~/anaconda3/etc/profile.d/conda.sh
+conda activate pytorch
+
+# la tuta dle fichero tiene que coincidir el servidor donde lanzo la tarea y en los nodos
+
+srun python test2.py
+
+
+
+
+
+##
+
+

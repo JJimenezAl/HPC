@@ -1,0 +1,4 @@
+jobid1=$(sbatch --parsable first_job.sh)
+jobid2=$(sbatch --parsable --dependency=afterok:$jobid1 second_job.sh)
+jobid3=$(sbatch --parsable --dependency=afterok:$jobid1 third_job.sh)
+sbatch --dependency=afterok:$jobid2,afterok:$jobid3 last_job.sh

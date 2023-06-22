@@ -1,0 +1,12 @@
+#!/bin/bash
+
+
+#SBATCH --mem-per-cpu=3072
+#SBATCH -n 5
+
+module load singularity
+
+#singularity exec /data/scratch/Biomics/Meta cat /etc/redhat-release
+
+
+singularity exec -w /data/scratch/Biomics/Meta /home/user/pruebas/singularity/bio.sh

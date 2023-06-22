@@ -1,0 +1,8 @@
+#!/bin/bash
+#scp /etc/hosts root@SERVLogin:/etc/hosts
+#scp /etc/group root@SERVLogin:/etc/group
+#scp /etc/shadow root@SERVLogin:/etc/shadow
+#scp /etc/passwd root@SERVLogin:/etc/passwd
+#scp /etc/munge/munge.key root@SERVLogin:/etc/munge/munge.key
+#scp /etc/slurm/slurm.conf  root@SERVLogin:/etc/slurm/slurm.conf
+#scp /etc/profile.d/lmod.sh root@SERVLogin:/etc/profile.d/lmod.sh

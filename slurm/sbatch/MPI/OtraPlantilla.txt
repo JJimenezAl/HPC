@@ -1,0 +1,17 @@
+#!/bin/bash
+#SBATCH --mail-user=abc123@case.edu
+#SBATCH --mail-type=ALL
+#SBATCH -N 3
+#SBATCH -n 24 # 8 MPI processes per node
+#SBATCH --time=7-00:00:00
+#SBATCH --mem=4G # 4 GB RAM per node
+#SBATCH --output=mpi_job_slurm.log
+
+module load openmpi # this is version 1.8.3
+echo $SLURM_JOB_NODELIST
+
+# Assign the number of processors
+NPROCS=$SLURM_NTASKS
+
+#Run the job
+mpirun -n $NPROCS ./test

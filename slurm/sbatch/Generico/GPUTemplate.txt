@@ -1,0 +1,58 @@
+#!/bin/bash
+#SBATCH --mail-user=abc123@case.edu
+#SBATCH --mail-type=ALL
+#SBATCH -N 1
+#SBATCH -c 1
+#SBATCH --time=2:00:00     # 2 hours
+#SBATCH --mem=100M
+#SBATCH --output=gpu-job.log
+#SBATCH --partition=gpu
+#SBATCH -C gpuk40
+#SBATCH --gres=gpu:1               # Request one gpu out of 2 (Max)
+#SBATCH --account=<group acct>     # substitute appropriate group here
+
+module load lammps
+pwd
+date
+lmp2015_cuda input.file
+date
+
+
+SI no poemos nemos #SBATCH --gres=gpu:1 funciona y mamnda trabajo a gpu pero no se refleja en sacct
+En nuestro caso
+
+
+
+#!/bin/bash
+#SBATCH --partition=GPU
+#SBATCH --account=GPU
+#SBATCH --gres=gpu:v100:0   
+#SBATCH --gres=gpu:v100:1
+#SBATCH --array=1-4
+
+
+##o SBATCH  --gres=gpu:v100:1 SBATCH  --gres=gpu:v100:2
+
+source ~/anaconda3/etc/profile.d/conda.sh
+conda activate pytorch
+srun python testtorch.py
+#srun --gres=gpu:1 -n1 --exclusive python testtorch.py.
+#Dejo scrips de pruebas de pytorch en la carpeta python/pytorch 
+
+
+mas info en la web descargada
+
+#!/bin/bash
+#
+# gres_test.bash
+# Submit as follows:
+# sbatch --gres=gpu:4 -n4 -N1-1 gres_test.bash
+#
+srun --gres=gpu:2 -n2 --exclusive show_device.sh &
+srun --gres=gpu:1 -n1 --exclusive show_device.sh &
+srun --gres=gpu:1 -n1 --exclusive show_device.sh &
+wait
+
+
+https://stackoverflow.com/questions/37093705/slurm-after-allocating-all-gpus-no-more-cpu-job-can-be-submitted
+Exlusive???

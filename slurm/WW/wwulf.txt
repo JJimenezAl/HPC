@@ -1,0 +1,94 @@
+wwsh filre resync slurm.conf
+pdsh -w node[05-42] /warewulf/bin/wwgetfiles
+systemctl restart slurmctld
+pdsh -w node[05-42] systemctl restart slurmd
+
+ SLEEPTIME=0 /warewulf/bin/wwgetfiles
+
+
+pdsh -w node135 /usr/sbin/lsof | grep mono | grep Max
+
+
+pdsh -w node135 systemctl restart slurmd
+
+export CHROOT=/opt/ohpc/admin/images/centos7.5
+
+scp /usr/lib64/libseccomp.so.2 root@node20:/usr/lib64/
+scp /usr/lib64/libseccomp.so.2.3.1 root@node20:/usr/lib64/
+
+scp -r /usr/share/licenses/libseccomp-2.3.1 root@node20:/usr/share/licenses/
+
+pdsh -w node[05-42] scp  root@servhpcmstr0101:/usr/lib64/libseccomp.so.2  /usr/lib64/
+
+
+pdsh -w node scp root@servhpcmstr0101:/usr/lib64/libseccomp.so.2  /usr/lib64/
+
+
+for nodo in  $(cat nodes.txt);do  scp /usr/lib64/libseccomp.so.2 $nodo:/usr/lib64/;done
+ 
+for nodo in  $(cat nodes.txt);do  scp /usr/lib64/libseccomp.so.2.3.1 $nodo:/usr/lib64/;done
+
+for nodo in  $(cat nodes.txt);do  scp -r /usr/share/licenses/libseccomp-2.3.1 $nodo:/usr/share/licenses/;done
+
+
+#Cambiar imágenes
+
+wwbootstrap  `uname -r`
+export CHROOT=/opt/ohpc/admin/images/centos7.5
+wwvnfs --chroot $CHROOT
+
+wwsh file resync slurm.conf
+pdsh -w node[05-41] /warewulf/bin/wwgetfiles
+ 
+pdsh -w node[05-41] systemctl start slurmd
+
+wwsh provision set node[05-42] --fileadd passwd
+
+Reasemble
+Wwvnfs --chroot $CHROOT
+
+ wwsh file resync passwd shadow group
+pdsh -w node[05-41]  /warewulf/bin/wwgetfiles
+pdsh -w node06 /warewulf/bin/wwgetfiles
+
+pdsh -w node[05-41] md5sum /etc/slurm/slurm.conf
+
+pdsh -w node[05-41] md5sum /etc/passwd
+pdsh -w node05 /usr/sbin/lsof | grep mono | grep Max
+
+Prueba
+
+scp /usr/lib64/libseccomp.so.2 root@node05
+  543  scp /usr/lib64/libseccomp.so.2 root@node05:/usr/lib64/
+  546  scp /usr/lib64/libseccomp.so.2.3.1 root@node05:/usr/lib64/
+  547  scp /usr/share/licenses/libseccomp-2.3.1 root@node05:/usr/share/licenses/
+  548  scp -r /usr/share/licenses/libseccomp-2.3.1 root@node05:/usr/share/licenses/
+
+pdsh -w node05 systemctl restart slurmd
+pdsh -w node41 systemctl restart slurmd
+
+pdsh -w node[05-42] systemctl stop beegfs-client
+
+pdsh -w node[05-42] rm -rf /data/localscratch/jobs/testhpc/
+pdsh -w node[05-42] ls -lia /data/localscratch/jobs/testhpc/
+
+
+pdsh -w node[05-42] rm -rf /data/localscratch/jobs/user/
+
+ls /data/localscratch/jobs/nobody/283909
+
+Comprobaciones usuario
+
+md5sum /etc/passwd
+pdsh -w node[05-41]  md5sum /etc/passwd
+
+wwsh file resync group 
+md5sum /etc/group 
+pdsh -w node[05-41]  md5sum /etc/group 
+
+
+
+  
+  
+
+
