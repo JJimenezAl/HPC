@@ -1,0 +1,11 @@
+
+
+sreport -a cluster AccountUtilizationByUser start=3/01/21 end=3/19/21
+sreport -tminper cluster utilization --tres="gres/gpu"
+
+	
+#Podemos ver también uso con sshare
+
+sshare
+ 
+ 
