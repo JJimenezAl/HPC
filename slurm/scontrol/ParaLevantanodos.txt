@@ -1,0 +1,11 @@
+
+ scontrol update nodename=servhpccl0122 state=DOWN Reason=Memory  
+
+
+
+ scontrol update nodename=servhpccl0108 state=resume
+ pdsh -w servhpccl0108 systemctl restart slurmd
+ 
+ 
+  pdsh -w servhpccl0122 systemctl restart slurmd
+ scontrol update nodename=servhpccl0122 state=resume

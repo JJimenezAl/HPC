@@ -1,0 +1,31 @@
+
+scontrol update jobid=184611 partition=name_partition
+
+scontrol update nodename=nodes[01-1000] state=resume
+
+
+DOWN/PAUSE
+scontrol update nodename=node0122 state=DOWN Reason=Memory
+scontrol update nodename=node0122 state=resume
+
+scontrol update nodename=node0122 state=resume
+scontrol update nodename=node0122 state=resume
+scontrol update nodename=node0122 state=DOWN
+
+
+
+scontrol create reservation StartTime=11:30:00 Duration=2-0 Nodes=nodes[01-1000] Corecnt=2 Account=naseb
+
+scontrol create reservation StartTime=2019-04-03T11:10:00 Duration=20 Nodes=nodes[01-1000] Corecnt=2 Account=naseb
+
+scontrol create reservation StartTime=2019-04-03T11:10:00 Duration=20  Nodecnt=1 Account=cuenta
+
+scontrol create reservation StartTime=2019-04-03T11:56:00 Duration=20  Nodecnt=1 Account=cuenta flags=ignore_jobs
+
+
+
+scontrol resume 2832{97..99}
+scontrol suspend 2833{00..17}
+
+
+scontrol update jobid=2832{97..99} TimeLimit=7-00:00:00
