@@ -1,0 +1,28 @@
+scp /etc/hosts root@login:/etc/hosts
+scp /etc/group root@login:/etc/group
+scp /etc/shadow root@login:/etc/shadow
+scp /etc/passwd root@login:/etc/passwd
+scp /etc/munge/munge.key root@login:/etc/munge/munge.key
+scp /etc/slurm/slurm.conf  root@login:/etc/slurm/slurm.conf
+scp /etc/profile.d/lmod.sh root@login:/etc/profile.d/lmod.sh
+
+
+hacerlo con sesion abierta por si hay que cambiar passwd y permisos en ssh
+ver login.txt
+
+
+El login de PRo nos conectamos desde el login a master
+#!/bin/bash
+#sudo scp user@SERVMASTER:/etc/hosts /etc/hosts
+#sudo scp root@SERVMASTER:/etc/profile.d/lmod.sh /etc/profile.d/lmod.sh
+#sudo scp root@SERVMASTER:/etc/slurm/slurm.conf /etc/slurm/slurm.conf
+
+#sudo scp root@SERVMASTER:/etc/munge/munge.key /etc/munge/munge.key
+
+
+sudo scp root@SERVMASTER:/etc/passwd /etc/passwd
+sudo scp root@SERVMASTER:/etc/group /etc/group
+sudo scp root@SERVMASTER:/etc/shadow /etc/shadow
+
+
+

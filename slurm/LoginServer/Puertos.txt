@@ -1,0 +1,6 @@
+Warning: The srun command only works if the login node can:
+    Connect to the Head node port 6817.
+    Resolve the DNS name of the compute nodes.
+    Connect to the Compute nodes port 6818.
+ 
+ 
