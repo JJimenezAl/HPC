@@ -1,0 +1,14 @@
+
+grant all on slurm_acct_db.* TO 'root'@'system0';
+
+grant all on slurm_acct_db.* TO 'root'@'localhost' identified by 'pass' with grant option;
+
+grant all on slurm_acct_db.* TO 'root'@'HPCBD' identified by 'pass' with grant option;
+
+create database slurm_acct_db;
+sacctmgr add cluster HPCluster
+
+
+
+select  "job_db_inx","mod_time","deleted","account","admin_comment","array_task_str","array_max_tasks","array_task_pending","cpus_req","derived_ec","derived_es","exit_code","job_name","id_assoc","id_array_job","id_array_task","id_block","id_job","id_qos", "id_resv","id_wckey","id_user","id_group","pack_job_id","pack_job_offset","kill_requid","mcs_label","mem_req","nodelist","nodes_alloc","node_inx","partition","priority","state","timelimit","time_submit","time_eligible","time_start","time_end","time_suspended","gres_req","gres_alloc","gres_used","wckey","work_dir","system_comment","track_steps","tres_alloc","tres_req"  union all select job_db_inx,mod_time,deleted,account,admin_comment,array_task_str,array_max_tasks,array_task_pending,cpus_req,derived_ec,derived_es,exit_code,job_name,id_assoc,id_array_job,id_array_task,id_block,id_job ,id_qos ,id_resv,id_wckey,id_user,id_group,pack_job_id,pack_job_offset,kill_requid,mcs_label,mem_req,nodelist,nodes_alloc,node_inx,partition,priority,state,timelimit,time_submit,time_eligible,time_start,time_end,time_suspended,gres_req,gres_alloc,gres_used,wckey,work_dir,system_comment,track_steps,tres_alloc,tres_req into OUTFILE 'head.csv' FIELDS TERMINATED BY ';'  from urederra_job_table;
+

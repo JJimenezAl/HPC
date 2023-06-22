@@ -1,0 +1,37 @@
+https://ikasten.io/2017/01/08/whats-the-default-password-of-root-user-in-mariadb/
+
+
+mysqldump --all-databases --single-transaction --quick --lock-tables=false > full-backup-$(date +%F).sql -u root -p
+
+
+specific BD
+
+
+mysqldump -u username -p db1 --single-transaction --quick --lock-tables=false > db1-backup-$(date +%F).sql
+
+https://www.linode.com/docs/databases/mysql/use-mysqldump-to-back-up-mysql-or-mariadb/
+
+
+
+CRON
+
+
+0 1 * * * /usr/bin/mysqldump --defaults-extra-file=/home/example_user/.my.cnf -u root --single-transaction --quick --lock-tables=false --all-databases > full-backup-$(date +%F).sql
+
+
+REstore
+
+
+mysql -u root -p < full-backup.sql
+
+mysql -u [username] -p db1 < db1-backup.sql
+
+
+
+sudo yum install MariaDB-backup
+
+
+https://mariadb.com/kb/en/library/mariabackup-overview/
+
+
+https://mariadb.com/kb/en/library/full-backup-and-restore-with-mariabackup/
