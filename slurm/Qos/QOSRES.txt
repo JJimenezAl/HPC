@@ -1,0 +1,25 @@
+sacctmgr show qos format=name,priority
+
+
+# sacctmgr -i add qos class_a Priority=100 MaxWall=72:00:00 MaxTRES="node=37" Flags="DenyOnLimit"
+# sacctmgr -i add qos class_b Priority=10 MaxWall=48:00:00 MaxTRES="node=37" Flags="DenyOnLimit"
+# sacctmgr -i add qos class_c Priority=1 MaxWall=24:00:00 MaxTRES="node=10" Flags="DenyOnLimit
+ 
+
+# sacctmgr -i add qos interactive Priority=100 MaxWall=2:00:00 MaxTRES="cpu=4" MaxJobsPU=1 Flags="DenyOnLimit"
+
+Para ver pertenencias
+
+sacctmgr show assoc format=cluster,user,qos
+
+sacctmgr modify user python set qos=class_a
+
+Aunque un usuario puede pertenecer a mas de un qos
+
+sacctmgr modify user python set qos+=class_a
+
+
+
+sacctmgr modify user user1 set qos=class_c
+
+

@@ -1,0 +1,53 @@
+sacctmgr show qos format=User,name,priority
+sacctmgr show user imozos withassoc -p
+
+# sacctmgr -i add qos class_a Priority=100 MaxWall=72:00:00 MaxTRES="node=200" Flags="DenyOnLimit"
+# sacctmgr -i add qos class_b Priority=10 MaxWall=48:00:00 MaxTRES="node=200" Flags="DenyOnLimit"
+# sacctmgr -i add qos class_c Priority=1 MaxWall=24:00:00 MaxTRES="node=20" Flags="DenyOnLimit"
+# sacctmgr -i add qos interactive Priority=100 MaxWall=2:00:00 MaxTRES="cpu=4" MaxJobsPU=1 Flags="DenyOnLimit"
+
+
+sacctmgr -i add qos nombreqos priority=1000 MaxWall=72:00:00 MaxTRES="node=200" Flags="DenyOnLimit"
+
+
+sacctmgr modify user userqsea set qos=class_c
+
+sacctmgr -i modify account bedrock set defaultqos=low
+
+
+sacctmgr modify user user1 set qos=class_a
+sacctmgr modify user user2 set qos=class_a
+
+
+sacctmgr modify group  usc45 set qos=class_c
+
+
+sacctmgr show assoc format=cluster,User,account,qos 
+
+
+sacctmgr show qos format=name,priority
+
+sacctmgr add qos zebra
+
+sacctmgr modify qos zebra set priority=10
+
+
+sacctmgr show qos format=name,priority
+
+
+sacctmgr modify qos zebra set GrpCPUs=24
+
+sacctmgr modify user crock set qos=zebra
+
+sacctmgr show assoc format=cluster,user,qos
+
+#Users can belong to multiple qos 
+
+sacctmgr modify user crock set qos+=alligator
+
+sacctmgr show assoc format=cluster,user,qos
+
+delete a qos 
+
+sacctmgr delete qos alligator
+
