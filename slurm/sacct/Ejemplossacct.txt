@@ -1,0 +1,21 @@
+GRANT EXECUTE ON FUNCTION slurm_acct_db.AgrupaPerCPUS to 'uperf'@'%';
+
+sacctmgr add account Pruebas cluster="HPC" Description="Pruebas DES" Organization="ORG"
+sacctmgr add account Pruebas cluster="HPC" Description="Pruebas DES" Organization="ORG"
+sacctmgr add user nas1 DefaultAccount=Pruebas
+sacctmgr add user nas2 DefaultAccount=Pruebas
+sacctmgr add user nas3 DefaultAccount=Pruebas
+
+sacctmgr add user nas1des DefaultAccount=Desarrollo
+sacctmgr add user nas2des DefaultAccount=Desarrollo
+sacctmgr add user nas3des DefaultAccount=Desarrollo
+
+sacctmgr add account Integracion cluster="HPC" Description="Entorno Integracion RES" Organization="ORG"
+sacctmgr add user nas1Int DefaultAccount=Integracion
+sacctmgr add user nas2Int DefaultAccount=Integracion
+sacctmgr add user nas3Int DefaultAccount=Integracion
+
+ 
+SET PASSWORD FOR 'root'@'localhost' = PASSWORD('XXX');
+
+

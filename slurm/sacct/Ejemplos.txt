@@ -1,0 +1,24 @@
+
+
+sacctmgr add CuentaSlurm linuxaccount  cluster="HPCluster" Description="Cuenta de la sociedad...." Organization="La que sea"
+sacctmgr add user linuxaccount  DefaultAccount=CuentaSlurm
+
+
+
+Ejemplo:
+
+useradd -u id user
+groupadd -g idgroup
+usermod -aG group iduser 
+
+usermod -aG Grupo1 user
+usermod -aG Grupo2  user
+usermod -aG SharedApps user
+sacctmgr add user linuxaccount  DefaultAccount=acountslurm
+sacctmgr modify user linuxaccount  set qos=class_a
+
+
+
+
+
+

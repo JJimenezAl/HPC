@@ -1,0 +1,4 @@
+sacct -a -X -S 2021-01-01 -E 2021-09-29 --format=Jobname%20,User%20,State,CPUTimeRAw -p >>/tmp/file.txt
+
+
+

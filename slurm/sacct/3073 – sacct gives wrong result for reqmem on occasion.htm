@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+
+<meta name="description" content="SchedMD - Slurm development and
+                                 support. Providing support for some
+                                 of the largest clusters in the
+                                 world.">
+<meta name="keywords" content="Slurm, resource manager, cluster,
+                                 linux, scheduling, support,
+                                 development, llnl, slurm-llnl, Danny
+                                 Auble, Morris Jette">
+<link rel="shortcut icon" href="https://bugs.schedmd.com/images/favicon.ico">
+    <title>3073 – sacct gives wrong result for reqmem on occasion</title>
+
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<link href="3073%20%E2%80%93%20sacct%20gives%20wrong%20result%20for%20reqmem%20on%20occasion_files/c31d1d09458e9f0c552ad52dc8248ddc.css" rel="stylesheet" type="text/css">
+
+
+
+    
+<script type="text/javascript" src="3073%20%E2%80%93%20sacct%20gives%20wrong%20result%20for%20reqmem%20on%20occasion_files/a7c2f3a028f17a9aa60f56dc9d6e732d.js"></script>
+
+    <script type="text/javascript">
+    <!--
+        YAHOO.namespace('bugzilla');
+        YAHOO.util.Event.addListener = function (el, sType, fn, obj, overrideContext) {
+               if ( ("onpagehide" in window || YAHOO.env.ua.gecko) && sType === "unload") { sType = "pagehide"; };
+               var capture = ((sType == "focusin" || sType == "focusout") && !YAHOO.env.ua.ie) ? true : false;
+               return this._addListener(el, this._getType(sType), fn, obj, overrideContext, capture);
+         };
+        if ( "onpagehide" in window || YAHOO.env.ua.gecko) {
+            YAHOO.util.Event._simpleRemove(window, "unload", 
+                                           YAHOO.util.Event._unload);
+        }
+        
+        function unhide_language_selector() { 
+            YAHOO.util.Dom.removeClass(
+                'lang_links_container', 'bz_default_hidden'
+            ); 
+        } 
+        YAHOO.util.Event.onDOMReady(unhide_language_selector);
+
+        
+        var BUGZILLA = {
+            param: {
+                cookiepath: '\/',
+                maxusermatches: 1000
+            },
+            constant: {
+                COMMENT_COLS: 80
+            },
+            string: {
+                
+
+                attach_desc_required:
+                    "You must enter a Description for this attachment.",
+                component_required:
+                    "You must select a Component for this bug.",
+                description_required:
+                    "You must enter a Description for this bug.",
+                short_desc_required:
+                    "You must enter a Summary for this bug.",
+                version_required:
+                    "You must select a Version for this bug."
+            }
+              , api_token: ''
+        };
+
+    if (history && history.replaceState) {
+      if(!document.location.href.match(/show_bug\.cgi/)) {
+        history.replaceState( null,
+                             "3073 – sacct gives wrong result for reqmem on occasion",
+                             "show_bug.cgi?id=3073" );
+        document.title = "3073 – sacct gives wrong result for reqmem on occasion";
+      }
+      if (document.location.href.match(/show_bug\.cgi\?.*list_id=/)) {
+        var href = document.location.href;
+        href = href.replace(/[\?&]+list_id=(\d+|cookie)/, '');
+        history.replaceState(null, "3073 – sacct gives wrong result for reqmem on occasion", href);
+      }
+    }
+    YAHOO.util.Event.onDOMReady(function() {
+      initDirtyFieldTracking();
+
+    });
+    // -->
+    </script>
+<script type="text/javascript" src="3073%20%E2%80%93%20sacct%20gives%20wrong%20result%20for%20reqmem%20on%20occasion_files/daf5e0fb6826e6a35280e622913f0c4a.js"></script>
+
+    
+
+    
+    <link rel="search" type="application/opensearchdescription+xml" title="SchedMD - Slurm Support" href="https://bugs.schedmd.com/search_plugin.cgi">
+    <link rel="shortcut icon" href="https://bugs.schedmd.com/images/favicon.ico"><meta name="robots" content="noarchive">
+  </head>
+
+  <body class="bugs-schedmd-com
+                 bz_bug
+                 bz_status_RESOLVED
+                 bz_product_Slurm
+                 bz_component_Accounting
+                 bz_bug_3073 yui-skin-sam">
+
+  <div id="header"><div id="banner">
+    <a href="http://www.schedmd.com/"><img src="3073%20%E2%80%93%20sacct%20gives%20wrong%20result%20for%20reqmem%20on%20occasion_files/schedmd.png" border="0"></a>
+  </div>
+
+    <div id="titles">
+      <span id="title">SchedMD - Slurm Support – Bug&nbsp;3073</span>
+
+        <span id="subtitle" class="subheader">sacct gives wrong result for reqmem on occasion</span>
+
+        <span id="information" class="header_addl_info">Last modified: 2016-09-14 09:34:49 MDT</span>
+    </div>
+
+
+    <div id="common_links"><ul class="links">
+  <li><a href="https://bugs.schedmd.com/">Home</a></li>
+  <li><span class="separator">| </span><a href="https://bugs.schedmd.com/enter_bug.cgi">New</a></li>
+  <li><span class="separator">| </span><a href="https://bugs.schedmd.com/describecomponents.cgi">Browse</a></li>
+  <li><span class="separator">| </span><a href="https://bugs.schedmd.com/query.cgi">Search</a></li>
+
+  <li class="form">
+    <span class="separator">| </span>
+    <form action="buglist.cgi" method="get" onsubmit="if (this.quicksearch.value == '')
+                  { alert('Please enter one or more search terms first.');
+                    return false; } return true;">
+    <input id="no_redirect_top" name="no_redirect" value="1" type="hidden">
+    <script type="text/javascript">
+      if (history && history.replaceState) {
+        var no_redirect = document.getElementById("no_redirect_top");
+        no_redirect.value = 1;
+      }
+    </script>
+    <input class="txt" id="quicksearch_top" name="quicksearch" title="Quick Search" type="text">
+    <input class="btn" value="Search" id="find_top" type="submit"></form>
+  <a href="https://bugs.schedmd.com/page.cgi?id=quicksearch.html" title="Quicksearch Help">[?]</a></li>
+
+  <li><span class="separator">| </span><a href="https://bugs.schedmd.com/report.cgi">Reports</a></li>
+
+  <li></li>
+
+
+  <li>
+        <span class="separator">| </span>
+        <a href="https://bugzilla.readthedocs.org/en/5.0/using/understanding.html" target="_blank">Help</a>
+      </li>
+    
+      <li id="new_account_container_top">
+        <span class="separator">| </span>
+        <a href="https://bugs.schedmd.com/createaccount.cgi">New&nbsp;Account</a>
+      </li>
+
+    <li id="mini_login_container_top">
+  <span class="separator">| </span>
+  <a id="login_link_top" href="https://bugs.schedmd.com/show_bug.cgi?id=3073&amp;GoAheadAndLogIn=1" onclick="return show_mini_login_form('_top')">Log In</a>
+
+  <form action="show_bug.cgi?id=3073" method="POST" class="mini_login bz_default_hidden" id="mini_login_top">
+    <input id="Bugzilla_login_top" required="" name="Bugzilla_login" class="bz_login" placeholder="Email Address" type="email">
+    <input class="bz_password" name="Bugzilla_password" id="Bugzilla_password_top" required="" placeholder="Password" type="password">
+    <input name="Bugzilla_login_token" value="1564748144-0s8WU2VkH7aOtdZ8US0B6I5CAIYqK9K5UXFHSA4cimY" type="hidden">
+    <input name="GoAheadAndLogIn" value="Log in" id="log_in_top" type="submit">
+    <a href="#" onclick="return hide_mini_login_form('_top')">[x]</a>
+  </form>
+</li>
+
+
+  <li id="forgot_container_top">
+    <span class="separator">| </span>
+    <a id="forgot_link_top" href="https://bugs.schedmd.com/show_bug.cgi?id=3073&amp;GoAheadAndLogIn=1#forgot" onclick="return show_forgot_form('_top')">Forgot Password</a>
+    <form action="token.cgi" method="post" id="forgot_form_top" class="mini_forgot bz_default_hidden">
+      <label for="login_top">Login:</label>
+      <input name="loginname" size="20" id="login_top" required="" placeholder="Your Email Address" type="email">
+      <input id="forgot_button_top" value="Reset Password" type="submit">
+      <input name="a" value="reqpw" type="hidden">
+      <input id="token_top" name="token" value="1564748144-z70Dv159Re_rN1wuFYCFgQP_NK0FvdbSl4Z8NrXTnBA" type="hidden">
+      <a href="#" onclick="return hide_forgot_form('_top')">[x]</a>
+    </form>
+  </li>
+</ul>
+    </div>
+  </div>
+
+  <div id="bugzilla-body">
+
+
+<script type="text/javascript">
+<!--
+
+//-->
+</script>
+
+<form name="changeform" id="changeform" method="post" action="process_bug.cgi">
+
+  <input name="delta_ts" value="2016-09-14 15:34:49" type="hidden">
+  <input name="id" value="3073" type="hidden">
+  <input name="token" value="1564748144-N-t3qkN98VkXWHKg9t4Th7btNlwZHTBzIOyeKhF2UhE" type="hidden">
+<div class="bz_short_desc_container edit_form">
+     <a href="https://bugs.schedmd.com/show_bug.cgi?id=3073"><b>Bug&nbsp;3073</b></a> <span id="summary_container">
+      - <span id="short_desc_nonedit_display">sacct gives wrong result for reqmem on occasion</span>
+     </span>
+
+    <div id="summary_input" class="bz_default_hidden"><span class="field_label " id="field_label_short_desc">
+
+
+  <a title="The bug summary is a short sentence which succinctly describes what the bug is about." class="field_help_link" href="https://bugs.schedmd.com/page.cgi?id=fields.html#short_desc">Summary:</a>
+
+</span>sacct gives wrong result for reqmem on occasion
+    </div>
+  </div>
+  <script type="text/javascript">
+    hideEditableField('summary_container',
+                      'summary_input',
+                      'summary_edit_action',
+                      'short_desc',
+                      'sacct gives wrong result for reqmem on occasion' );
+  </script>
+  <table class="edit_form">
+    <tbody><tr>
+      
+      <td id="bz_show_bug_column_1" class="bz_show_bug_column">     
+        <table>
+          <tbody><tr>
+    <th class="field_label">
+      <a href="https://bugs.schedmd.com/page.cgi?id=fields.html#bug_status">Status</a>:
+    </th>
+    <td id="bz_field_status">
+      <span id="static_bug_status">RESOLVED
+          INFOGIVEN
+      </span>
+    </td>
+  </tr>
+<tr>
+    <td colspan="2" class="bz_section_spacer"></td>
+  </tr>
+<tr><th class="field_label " id="field_label_alias">
+
+
+  <a title="A short, unique name assigned to a bug in order to assist with looking it up and referring to it in other places in Bugzilla." class="field_help_link" href="https://bugs.schedmd.com/page.cgi?id=fields.html#alias">Alias:</a>
+
+</th>
+    <td>
+        None
+    </td>
+  </tr>
+<tr>
+    <td colspan="2" class="bz_section_spacer"></td>
+  </tr>
+<tr><th class="field_label " id="field_label_product">
+
+
+  <a title="Bugs are categorised into Products and Components." class="field_help_link" href="https://bugs.schedmd.com/describecomponents.cgi">Product:</a>
+
+</th>
+  <td class="field_value " id="field_container_product">Slurm
+
+</td>
+    </tr>
+
+    
+    <tr class="bz_default_hidden"><th class="field_label " id="field_label_classification">
+
+
+  <a title="Bugs are categorised into Classifications, Products and Components. classifications is the top-level categorisation." class="field_help_link" href="https://bugs.schedmd.com/page.cgi?id=fields.html#classification">Classification:</a>
+
+</th>
+  <td class="field_value " id="field_container_classification">Unclassified
+
+</td>
+    </tr>
+        
+    
+    
+    <tr><th class="field_label " id="field_label_component">
+
+
+  <a title="Components are second-level categories; each belongs to a particular Product. Select a Product to narrow down this list." class="field_help_link" href="https://bugs.schedmd.com/describecomponents.cgi?product=Slurm">Component:</a>
+
+</th>
+  <td class="field_value " id="field_container_component">Accounting
+
+  (<a href="https://bugs.schedmd.com/buglist.cgi?component=Accounting&amp;product=Slurm&amp;bug_status=__open__" target="_blank">show other bugs</a>)
+</td>
+    </tr>
+    <tr><th class="field_label " id="field_label_version">
+
+
+  <a title="The version field defines the version of the software the bug was found in." class="field_help_link" href="https://bugs.schedmd.com/page.cgi?id=fields.html#version">Version:</a>
+
+</th>
+<td>15.08.6
+  </td>
+    </tr>
+        
+    
+        
+    <tr><th class="field_label " id="field_label_rep_platform">
+
+
+  <a title="The hardware platform the bug was observed on. Note: When searching, selecting the option &quot;All&quot; only finds bugs whose value for this field is literally the word &quot;All&quot;." class="field_help_link" href="https://bugs.schedmd.com/page.cgi?id=fields.html#rep_platform">Hardware:</a>
+
+</th>
+      <td class="field_value">Linux
+        Linux
+      </td>
+    </tr>
+          <tr>
+    <td colspan="2" class="bz_section_spacer"></td>
+  </tr>
+          
+          <tr>
+      <th class="field_label">
+        <label accesskey="i">
+          <a href="https://bugs.schedmd.com/page.cgi?id=fields.html#importance"><u>I</u>mportance</a></label>:
+      </th>
+      <td>---
+       4 - Minor Issue
+      </td>
+    </tr>
+          
+          <tr><th class="field_label " id="field_label_assigned_to">
+
+
+  <a title="The person in charge of resolving the bug." class="field_help_link" href="https://bugs.schedmd.com/page.cgi?id=fields.html#assigned_to">Assignee:</a>
+
+</th>
+      <td><span class="vcard"><span class="fn">Alejandro Sanchez</span>
+</span>
+      </td>
+    </tr>
+
+    <tr><th class="field_label " id="field_label_qa_contact">
+
+
+  <a title="The person responsible for confirming this bug if it is unconfirmed, and for verifying the fix once the bug has been resolved." class="field_help_link" href="https://bugs.schedmd.com/page.cgi?id=fields.html#qa_contact">QA Contact:</a>
+
+</th>
+      <td><span class="vcard">
+</span>
+      </td>
+    </tr>
+    <script type="text/javascript">
+      assignToDefaultOnChange(['product', 'component'],
+        'support\x40schedmd.com',
+        '');
+    </script>
+          <tr>
+    <td colspan="2" class="bz_section_spacer"></td>
+  </tr>
+          <tr><th class="field_label " id="field_label_bug_file_loc">
+
+
+  <a title="Bugs can have a URL associated with them - for example, a pointer to a web site where the problem is seen." class="field_help_link" href="https://bugs.schedmd.com/page.cgi?id=fields.html#bug_file_loc">URL:</a>
+
+</th>
+    <td>
+      <span id="bz_url_input_area">
+      </span>
+    </td>
+  </tr>
+          <tr>
+    <td colspan="2" class="bz_section_spacer"></td>
+  </tr>
+
+          
+<tr><th class="field_label " id="field_label_dependson">
+
+
+  <a title="The bugs listed here must be resolved before this bug can be resolved." class="field_help_link" href="https://bugs.schedmd.com/page.cgi?id=fields.html#dependson">Depends on:</a>
+
+</th>
+
+  <td>
+    <span id="dependson_input_area">
+    </span>
+
+  </td>
+  </tr>
+  
+  <tr><th class="field_label " id="field_label_blocked">
+
+
+  <a title="This bug must be resolved before the bugs listed in this field can be resolved." class="field_help_link" href="https://bugs.schedmd.com/page.cgi?id=fields.html#blocked">Blocks:</a>
+
+</th>
+
+  <td>
+    <span id="blocked_input_area">
+    </span>
+
+  </td>
+  </tr>
+          
+        </tbody></table>
+      </td>
+      <td>
+        <div class="bz_column_spacer">&nbsp;</div>
+      </td>
+      
+      <td id="bz_show_bug_column_2" class="bz_show_bug_column">
+        <table>
+        <tbody><tr>
+    <th class="field_label">
+      Reported:
+    </th>
+    <td>2016-09-11 21:06 MDT by <span class="vcard"><span class="fn">Josh Bowden</span>
+</span>
+    </td>
+  </tr>
+  
+  <tr>
+    <th class="field_label">
+      Modified:
+    </th>
+    <td>2016-09-14 09:34 MDT
+      (<a href="https://bugs.schedmd.com/show_activity.cgi?id=3073">History</a>)
+    </td>
+  
+  </tr>
+<tr>
+      <th class="field_label">
+        <label accesskey="a">
+          CC List:
+        </label>
+      </th>
+      <td>3 
+          users
+          <span id="cc_edit_area_showhide_container">
+            (<a href="#" id="cc_edit_area_showhide">show</a>)
+          </span>
+        <div id="cc_edit_area" class="bz_default_hidden">
+          <br>
+            <select id="cc" multiple="multiple" size="5">
+                <option value="alex">alex</option>
+                <option value="gareth.williams">gareth.williams</option>
+                <option value="James.Powell">James.Powell</option>
+            </select>
+        </div>
+          <script type="text/javascript">
+            hideEditableField( 'cc_edit_area_showhide_container', 
+                               'cc_edit_area', 
+                               'cc_edit_area_showhide', 
+                               '', 
+                               '');  
+          </script>
+      </td>
+    </tr>
+
+<tr>
+    <td colspan="2" class="bz_section_spacer"></td>
+  </tr>
+<tr><th class="field_label " id="field_label_see_also">
+
+
+  <a title="This allows you to refer to bugs in other installations. You can enter a URL to a bug in the 'Add Bug URLs' field to note that that bug is related to this one. You can enter multiple URLs at once by separating them with whitespace. You should normally use this field to refer to bugs in other installations. For bugs in this installation, it is better to use the Depends on and Blocks fields." class="field_help_link" href="https://bugs.schedmd.com/page.cgi?id=fields.html#see_also">See Also:</a>
+
+</th>
+  <td class="field_value " id="field_container_see_also">
+
+</td>
+    </tr> 
+<tr>
+      <th class="field_label " id="field_label_cf_site">
+
+
+  <a title="A custom Drop Down field in this installation of Bugzilla." class="field_help_link" href="https://bugs.schedmd.com/page.cgi?id=fields.html#cf_site">Site:</a>
+
+</th>
+  <td class="field_value " id="field_container_cf_site">CSIRO
+
+</td>
+    </tr>
+    <tr>
+      <th class="field_label  bz_hidden_field" id="field_label_cf_alineos_sites">
+
+
+  <a title="A custom Drop Down field in this installation of Bugzilla." class="field_help_link" href="https://bugs.schedmd.com/page.cgi?id=fields.html#cf_alineos_sites">Alineos Sites:</a>
+
+</th>
+  <td class="field_value  bz_hidden_field" id="field_container_cf_alineos_sites">---
+
+</td>
+    </tr>
+    <tr>
+      <th class="field_label  bz_hidden_field" id="field_label_cf_bull_sites">
+
+
+  <a title="Sites from Bull/Atos" class="field_help_link" href="https://bugs.schedmd.com/page.cgi?id=fields.html#cf_bull_sites">Bull/Atos Sites:</a>
+
+</th>
+  <td class="field_value  bz_hidden_field" id="field_container_cf_bull_sites">---
+
+</td>
+    </tr>
+    <tr>
+      <th class="field_label  bz_hidden_field" id="field_label_cf_confidential_site">
+
+
+  <a title="A custom Drop Down field in this installation of Bugzilla." class="field_help_link" href="https://bugs.schedmd.com/page.cgi?id=fields.html#cf_confidential_site">Confidential Site:</a>
+
+</th>
+  <td class="field_value  bz_hidden_field" id="field_container_cf_confidential_site">---
+
+</td>
+    </tr>
+    <tr>
+      <th class="field_label  bz_hidden_field" id="field_label_cf_cray_site">
+
+
+  <a title="List for Cray sites" class="field_help_link" href="https://bugs.schedmd.com/page.cgi?id=fields.html#cf_cray_site">Cray Sites:</a>
+
+</th>
+  <td class="field_value  bz_hidden_field" id="field_container_cf_cray_site">---
+
+</td>
+    </tr>
+    <tr>
+      <th class="field_label  bz_hidden_field" id="field_label_cf_hpcnow_site">
+
+
+  <a title="A custom Drop Down field in this installation of Bugzilla." class="field_help_link" href="https://bugs.schedmd.com/page.cgi?id=fields.html#cf_hpcnow_site">HPCnow Sites:</a>
+
+</th>
+  <td class="field_value  bz_hidden_field" id="field_container_cf_hpcnow_site">---
+
+</td>
+    </tr>
+    <tr>
+      <th class="field_label  bz_hidden_field" id="field_label_cf_hpe_site">
+
+
+  <a title="A custom Drop Down field in this installation of Bugzilla." class="field_help_link" href="https://bugs.schedmd.com/page.cgi?id=fields.html#cf_hpe_site">HPE Sites:</a>
+
+</th>
+  <td class="field_value  bz_hidden_field" id="field_container_cf_hpe_site">---
+
+</td>
+    </tr>
+    <tr>
+      <th class="field_label  bz_hidden_field" id="field_label_cf_ibmfr_sites">
+
+
+  <a title="A custom Drop Down field in this installation of Bugzilla." class="field_help_link" href="https://bugs.schedmd.com/page.cgi?id=fields.html#cf_ibmfr_sites">IBM Sites:</a>
+
+</th>
+  <td class="field_value  bz_hidden_field" id="field_container_cf_ibmfr_sites">---
+
+</td>
+    </tr>
+    <tr>
+      <th class="field_label  bz_hidden_field" id="field_label_cf_noaa_site">
+
+
+  <a title="A custom Drop Down field in this installation of Bugzilla." class="field_help_link" href="https://bugs.schedmd.com/page.cgi?id=fields.html#cf_noaa_site">NOAA SIte:</a>
+
+</th>
+  <td class="field_value  bz_hidden_field" id="field_container_cf_noaa_site">---
+
+</td>
+    </tr>
+    <tr>
+      <th class="field_label  bz_hidden_field" id="field_label_cf_ocf_sites">
+
+
+  <a title="A custom Drop Down field in this installation of Bugzilla." class="field_help_link" href="https://bugs.schedmd.com/page.cgi?id=fields.html#cf_ocf_sites">OCF Sites:</a>
+
+</th>
+  <td class="field_value  bz_hidden_field" id="field_container_cf_ocf_sites">---
+
+</td>
+    </tr>
+    <tr>
+      <th class="field_label  bz_hidden_field" id="field_label_cf_sfw_sites">
+
+
+  <a title="A custom Drop Down field in this installation of Bugzilla." class="field_help_link" href="https://bugs.schedmd.com/page.cgi?id=fields.html#cf_sfw_sites">SFW Sites:</a>
+
+</th>
+  <td class="field_value  bz_hidden_field" id="field_container_cf_sfw_sites">---
+
+</td>
+    </tr>
+    <tr>
+      <th class="field_label  bz_hidden_field" id="field_label_cf_snic_site">
+
+
+  <a title="A custom Drop Down field in this installation of Bugzilla." class="field_help_link" href="https://bugs.schedmd.com/page.cgi?id=fields.html#cf_snic_site">SNIC sites:</a>
+
+</th>
+  <td class="field_value  bz_hidden_field" id="field_container_cf_snic_site">---
+
+</td>
+    </tr>
+    <tr>
+      <th class="field_label " id="field_label_cf_linux_version">
+
+
+  <a title="Linux Distribution" class="field_help_link" href="https://bugs.schedmd.com/page.cgi?id=fields.html#cf_linux_version">Linux Distro:</a>
+
+</th>
+  <td class="field_value " id="field_container_cf_linux_version">---
+
+</td>
+    </tr>
+    <tr>
+      <th class="field_label " id="field_label_cf_mach_name">
+
+
+  <a title="A custom Free Text field in this installation of Bugzilla." class="field_help_link" href="https://bugs.schedmd.com/page.cgi?id=fields.html#cf_mach_name">Machine Name:</a>
+
+</th>
+  <td class="field_value " id="field_container_cf_mach_name">pearcey
+
+</td>
+    </tr>
+    <tr>
+      <th class="field_label  bz_hidden_field" id="field_label_cf_cle_version">
+
+
+  <a title="A custom Free Text field in this installation of Bugzilla." class="field_help_link" href="https://bugs.schedmd.com/page.cgi?id=fields.html#cf_cle_version">CLE Version:</a>
+
+</th>
+  <td class="field_value  bz_hidden_field" id="field_container_cf_cle_version">
+
+</td>
+    </tr>
+    <tr>
+      <th class="field_label  bz_hidden_field" id="field_label_cf_verision_fixed">
+
+
+  <a title="Version of Slurm containing the bug fix." class="field_help_link" href="https://bugs.schedmd.com/page.cgi?id=fields.html#cf_verision_fixed">Version Fixed:</a>
+
+</th>
+  <td class="field_value  bz_hidden_field" id="field_container_cf_verision_fixed">
+
+</td>
+    </tr>
+    <tr>
+      <th class="field_label  bz_hidden_field" id="field_label_cf_target">
+
+
+  <a title="Release target for enhancement." class="field_help_link" href="https://bugs.schedmd.com/page.cgi?id=fields.html#cf_target">Target Release:</a>
+
+</th>
+  <td class="field_value  bz_hidden_field" id="field_container_cf_target">---
+
+</td>
+    </tr>
+    <tr>
+      <th class="field_label  bz_hidden_field" id="field_label_cf_devprio">
+
+
+  <a title="SchedMD Developer Priority Level for enhancements" class="field_help_link" href="https://bugs.schedmd.com/page.cgi?id=fields.html#cf_devprio">DevPrio:</a>
+
+</th>
+  <td class="field_value  bz_hidden_field" id="field_container_cf_devprio">---
+
+</td>
+    </tr>
+<tr>
+    <td colspan="2" class="bz_section_spacer"></td>
+  </tr>
+
+
+
+        </tbody></table>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="3">
+          <hr id="bz_top_half_spacer">
+      </td>
+    </tr>
+  </tbody></table>
+
+  <table id="bz_big_form_parts">
+  <tbody><tr>
+  <td>
+
+    
+<script type="text/javascript">
+<!--
+function toggle_display(link) {
+    var table = document.getElementById("attachment_table");
+    var view_all = document.getElementById("view_all");
+    var hide_obsolete_url_parameter = "&hide_obsolete=1";
+    // Store current height for scrolling later
+    var originalHeight = table.offsetHeight;
+    var rows = YAHOO.util.Dom.getElementsByClassName(
+        'bz_tr_obsolete', 'tr', table);
+
+    for (var i = 0; i < rows.length; i++) {
+        bz_toggleClass(rows[i], 'bz_default_hidden');
+    }
+
+    if (YAHOO.util.Dom.hasClass(rows[0], 'bz_default_hidden')) {
+        link.innerHTML = "Show Obsolete";
+        view_all.href = view_all.href + hide_obsolete_url_parameter 
+    }
+    else {
+        link.innerHTML = "Hide Obsolete";
+        view_all.href = view_all.href.replace(hide_obsolete_url_parameter,"");
+    }
+
+    var newHeight = table.offsetHeight;
+    // This scrolling makes the window appear to not move at all.
+    window.scrollBy(0, newHeight - originalHeight);
+
+    return false;
+}
+//-->
+</script>
+
+<br>
+<table id="attachment_table">
+  <tbody><tr id="a0">
+    <th colspan="2" class="left">
+      Attachments
+    </th>
+  </tr>
+
+
+
+  <tr class="bz_attach_footer">
+    <td colspan="2">
+        <a href="https://bugs.schedmd.com/attachment.cgi?bugid=3073&amp;action=enter">Add an attachment</a>
+        (proposed patch, testcase, etc.)
+    </td>
+  </tr>
+</tbody></table>
+<br>
+<div id="add_comment" class="bz_section_additional_comments">
+      <table>
+        <tbody><tr>
+          <td>
+            <fieldset>
+              <legend>Note</legend>
+              You need to
+              <a href="https://bugs.schedmd.com/show_bug.cgi?id=3073&amp;GoAheadAndLogIn=1">log in</a>
+              before you can comment on or make changes to this bug.
+            </fieldset>
+          </td>
+        </tr> 
+      </tbody></table>
+  </div>
+  </td>
+  <td>
+  </td>
+  </tr></tbody></table>
+
+  
+  <div id="comments"><script src="3073%20%E2%80%93%20sacct%20gives%20wrong%20result%20for%20reqmem%20on%20occasion_files/comments.js" type="text/javascript">
+</script>
+
+<script type="text/javascript">
+<!--
+  /* Adds the reply text to the 'comment' textarea */
+  function replyToComment(id, real_id, name) {
+      var prefix = "(In reply to " + name + " from comment #" + id + ")\n";
+      var replytext = "";
+        /* pre id="comment_name_N" */
+        var text_elem = document.getElementById('comment_text_'+id);
+        var text = getText(text_elem);
+        replytext = prefix + wrapReplyText(text);
+
+
+      /* <textarea id="comment"> */
+      var textarea = document.getElementById('comment');
+      if (textarea.value != replytext) {
+          textarea.value += replytext;
+      }
+
+      textarea.focus();
+  } 
+//-->
+</script>
+
+
+<!-- This auto-sizes the comments and positions the collapse/expand links 
+     to the right. -->
+<table class="bz_comment_table">
+<tbody><tr>
+<td>
+<div id="c0" class="bz_comment bz_first_comment">
+
+      <div class="bz_first_comment_head">
+
+
+        <span class="bz_comment_number">
+          <a href="https://bugs.schedmd.com/show_bug.cgi?id=3073#c0">Description</a>
+        </span>
+
+        <span class="bz_comment_user">
+          <span class="vcard"><span class="fn">Josh Bowden</span>
+</span>
+        </span>
+
+        <span class="bz_comment_user_images">
+        </span>
+
+        <span class="bz_comment_time">
+          2016-09-11 21:06:15 MDT
+        </span>
+
+      </div>
+
+
+
+
+<pre class="bz_comment_text">Hi
+
+I'm trying to determine how much memory a job has been given.
+
+I request memory like this
+#SBATCH --mem=64GB
+
+And the way I can find out is using (with some extra processing):
+MEMREQUESTED=`sacct -o reqmem -j $SLURM_JOB_ID`
+
+However, sacct seems to give bogus results on occasion. e.g. not 64Gn, but perhaps 4 or nothing. 
+
+Is there a better way to determine memory allocated to a job? 
+
+My version of SLURM is:
+ slurm 15.08.6
+
+Thanks for your help with this.</pre>
+    </div>
+
+    <div id="c1" class="bz_comment">
+
+      <div class="bz_comment_head">
+
+
+        <span class="bz_comment_number">
+          <a href="https://bugs.schedmd.com/show_bug.cgi?id=3073#c1">Comment 1</a>
+        </span>
+
+        <span class="bz_comment_user">
+          <span class="vcard"><span class="fn">Alejandro Sanchez</span>
+</span>
+        </span>
+
+        <span class="bz_comment_user_images">
+        </span>
+
+        <span class="bz_comment_time">
+          2016-09-12 06:38:42 MDT
+        </span>
+
+      </div>
+
+
+
+
+<pre class="bz_comment_text">Josh, I'm not able to reproduce this. Are you able to find a solid reproducer? i.e. a context, configuration and specific job request leading to sacct reporting wrong ReqMem?
+
+$ cat test.batch 
+#!/bin/bash
+#SBATCH -N 1
+#SBATCH -n 1
+#SBATCH --mem=1G
+srun hostname
+$ sbatch test.batch 
+Submitted batch job 20003
+$ sacct -j 20003 -o reqmem
+    ReqMem 
+---------- 
+    1024Mn 
+$ sacct -V
+slurm 15.08.6</pre>
+    </div>
+
+    <div id="c2" class="bz_comment">
+
+      <div class="bz_comment_head">
+
+
+        <span class="bz_comment_number">
+          <a href="https://bugs.schedmd.com/show_bug.cgi?id=3073#c2">Comment 2</a>
+        </span>
+
+        <span class="bz_comment_user">
+          <span class="vcard"><span class="fn">Alejandro Sanchez</span>
+</span>
+        </span>
+
+        <span class="bz_comment_user_images">
+        </span>
+
+        <span class="bz_comment_time">
+          2016-09-12 06:40:51 MDT
+        </span>
+
+      </div>
+
+
+
+
+<pre class="bz_comment_text">Also could you please attach your slurm.conf, slurmctld.log and slurmdbd.log files and provide the jobid of a job for which sacct is reporting wrong results? Thank you.</pre>
+    </div>
+
+    <div id="c3" class="bz_comment">
+
+      <div class="bz_comment_head">
+
+
+        <span class="bz_comment_number">
+          <a href="https://bugs.schedmd.com/show_bug.cgi?id=3073#c3">Comment 3</a>
+        </span>
+
+        <span class="bz_comment_user">
+          <span class="vcard"><span class="fn">Josh Bowden</span>
+</span>
+        </span>
+
+        <span class="bz_comment_user_images">
+        </span>
+
+        <span class="bz_comment_time">
+          2016-09-13 02:07:13 MDT
+        </span>
+
+      </div>
+
+
+
+
+<pre class="bz_comment_text">Hi Alejandro,
+
+I have found a workaround – put a “sleep 5” before MEMREQUESTED=`sacct -o reqmem -n -j $SLURM_JOB_ID`
+
+Our system is a bit slow to register its accounting db it seems.
+
+I got a 7/7 pass test pass rate with the sleep pause. That is better than the 1/7 without it.
+
+Cheers,
+Josh
+
+FYI:
+
+And this is an example sbatch script that will show the problem on our system:
+
+#!/bin/bash
+#SBATCH --job-name="test_acctl"
+#SBATCH --time=00:05:00
+#SBATCH --nodes=2
+#SBATCH --ntasks-per-node=2
+#SBATCH --mem=8GB
+#SBATCH --output=test3_acctl_%j.out
+
+# set the temporary file location
+echo "TMPDIR = $TMPDIR"
+echo "WORKDIR = $WORKDIR"
+echo "hostname = " ; hostname
+
+# go to the job submission directory; you can change this to your project directory
+cd $SLURM_SUBMIT_DIR
+module load R
+module load jdk
+
+LAUNCHTHREADS=$SLURM_NTASKS_PER_NODE
+MEMFORR=4
+MEMREQUESTED=`sacct -o reqmem -n -j $SLURM_JOB_ID`
+echo "MEMREQUESTED = $MEMREQUESTED"
+MEMREQUESTED=`echo ${MEMREQUESTED} | grep G | sed -e 's/Gn//'`
+echo "MEMREQUESTED = $MEMREQUESTED"
+MEMREQUESTED=$(( $MEMREQUESTED-$MEMFORR ))
+echo "MEMREQUESTED = $MEMREQUESTED"
+-----------------------------------------------------------------------------------
+
+Typical output is as follows – more time than not the reported requested memory is wrong.
+
+
+head test3*.out
+==&gt; test3_acctl_1469469.out &lt;==
+TMPDIR = /tmp/bow355.1469469
+WORKDIR =
+hostname =
+c039
+MEMREQUESTED =        8Gn                          --------------------- Correct!
+MEMREQUESTED = 8
+MEMREQUESTED = 4
+
+==&gt; test3_acctl_1469470.out &lt;==
+TMPDIR = /tmp/bow355.1469470
+WORKDIR =
+hostname =
+c039
+MEMREQUESTED =                                         --------------------- Not correct! Blank!
+MEMREQUESTED =
+MEMREQUESTED = -4
+
+==&gt; test3_acctl_1469471.out &lt;==
+TMPDIR = /tmp/bow355.1469471
+WORKDIR =
+hostname =
+c039
+MEMREQUESTED =
+MEMREQUESTED =
+MEMREQUESTED = -4
+
+==&gt; test3_acctl_1469472.out &lt;==
+TMPDIR = /tmp/bow355.1469472
+WORKDIR =
+hostname =
+c039
+MEMREQUESTED =
+MEMREQUESTED =
+MEMREQUESTED = -4
+
+==&gt; test3_acctl_1469473.out &lt;==
+TMPDIR = /tmp/bow355.1469473
+WORKDIR =
+hostname =
+c039
+MEMREQUESTED =
+MEMREQUESTED =
+MEMREQUESTED = -4
+
+
+Please tell me if there is anything obvious.
+
+Thanks for any help.
+
+Regards,
+Josh
+
+From: <a href="mailto:bugs@schedmd.com">bugs@schedmd.com</a> [<a href="mailto:bugs@schedmd.com">mailto:bugs@schedmd.com</a>]
+Sent: Monday, 12 September 2016 10:39 PM
+To: Bowden, Josh (IM&amp;T, St. Lucia) &lt;<a href="mailto:Josh.Bowden@csiro.au">Josh.Bowden@csiro.au</a>&gt;
+Subject: [<a class="bz_bug_link 
+          bz_status_RESOLVED  bz_closed" title="RESOLVED INFOGIVEN - sacct gives wrong result for reqmem on occasion" href="https://bugs.schedmd.com/show_bug.cgi?id=3073">Bug 3073</a>] sacct gives wrong result for reqmem on occasion
+
+Alejandro Sanchez&lt;<a href="mailto:alex@schedmd.com">mailto:alex@schedmd.com</a>&gt; changed <a class="bz_bug_link 
+          bz_status_RESOLVED  bz_closed" title="RESOLVED INFOGIVEN - sacct gives wrong result for reqmem on occasion" href="https://bugs.schedmd.com/show_bug.cgi?id=3073">bug 3073</a>&lt;<a class="bz_bug_link 
+          bz_status_RESOLVED  bz_closed" title="RESOLVED INFOGIVEN - sacct gives wrong result for reqmem on occasion" href="https://bugs.schedmd.com/show_bug.cgi?id=3073">https://bugs.schedmd.com/show_bug.cgi?id=3073</a>&gt;
+What
+
+Removed
+
+Added
+
+CC
+
+
+
+<a href="mailto:alex@schedmd.com">alex@schedmd.com</a>&lt;<a href="mailto:alex@schedmd.com">mailto:alex@schedmd.com</a>&gt;
+
+Assignee
+
+<a href="mailto:support@schedmd.com">support@schedmd.com</a>&lt;<a href="mailto:support@schedmd.com">mailto:support@schedmd.com</a>&gt;
+
+<a href="mailto:alex@schedmd.com">alex@schedmd.com</a>&lt;<a href="mailto:alex@schedmd.com">mailto:alex@schedmd.com</a>&gt;
+
+<a href="https://bugs.schedmd.com/show_bug.cgi?id=3073#c1">Comment # 1</a>&lt;<a class="bz_bug_link 
+          bz_status_RESOLVED  bz_closed" title="RESOLVED INFOGIVEN - sacct gives wrong result for reqmem on occasion" href="https://bugs.schedmd.com/show_bug.cgi?id=3073#c1">https://bugs.schedmd.com/show_bug.cgi?id=3073#c1</a>&gt; on <a class="bz_bug_link 
+          bz_status_RESOLVED  bz_closed" title="RESOLVED INFOGIVEN - sacct gives wrong result for reqmem on occasion" href="https://bugs.schedmd.com/show_bug.cgi?id=3073">bug 3073</a>&lt;<a class="bz_bug_link 
+          bz_status_RESOLVED  bz_closed" title="RESOLVED INFOGIVEN - sacct gives wrong result for reqmem on occasion" href="https://bugs.schedmd.com/show_bug.cgi?id=3073">https://bugs.schedmd.com/show_bug.cgi?id=3073</a>&gt; from Alejandro Sanchez&lt;<a href="mailto:alex@schedmd.com">mailto:alex@schedmd.com</a>&gt;
+
+Josh, I'm not able to reproduce this. Are you able to find a solid reproducer?
+
+i.e. a context, configuration and specific job request leading to sacct
+
+reporting wrong ReqMem?
+
+
+
+$ cat test.batch
+
+#!/bin/bash
+
+#SBATCH -N 1
+
+#SBATCH -n 1
+
+#SBATCH --mem=1G
+
+srun hostname
+
+$ sbatch test.batch
+
+Submitted batch job 20003
+
+$ sacct -j 20003 -o reqmem
+
+    ReqMem
+
+----------
+
+    1024Mn
+
+$ sacct -V
+
+slurm 15.08.6
+
+________________________________
+You are receiving this mail because:
+
+  *   You reported the bug.</pre>
+    </div>
+
+    <div id="c4" class="bz_comment">
+
+      <div class="bz_comment_head">
+
+
+        <span class="bz_comment_number">
+          <a href="https://bugs.schedmd.com/show_bug.cgi?id=3073#c4">Comment 4</a>
+        </span>
+
+        <span class="bz_comment_user">
+          <span class="vcard"><span class="fn">Alejandro Sanchez</span>
+</span>
+        </span>
+
+        <span class="bz_comment_user_images">
+        </span>
+
+        <span class="bz_comment_time">
+          2016-09-13 05:51:57 MDT
+        </span>
+
+      </div>
+
+
+
+
+<pre class="bz_comment_text">Josh yes... it's just a matter of time. `sacct` command retrieves the ReqMem value from the &lt;cluster&gt;_job_table record for the submitted job record, and the record is created when jobacct_storage_p_job_start() runs. But while it runs the job script is run in parallel so if you need to `sacct` inside the job script itself you've to manually add some delay or wait for the job script to finish to `sacct` this job record. Please, let me know if this makes sense to you. Thanks.</pre>
+    </div>
+
+    <div id="c5" class="bz_comment">
+
+      <div class="bz_comment_head">
+
+
+        <span class="bz_comment_number">
+          <a href="https://bugs.schedmd.com/show_bug.cgi?id=3073#c5">Comment 5</a>
+        </span>
+
+        <span class="bz_comment_user">
+          <span class="vcard"><span class="fn">Gareth</span>
+</span>
+        </span>
+
+        <span class="bz_comment_user_images">
+        </span>
+
+        <span class="bz_comment_time">
+          2016-09-13 06:23:00 MDT
+        </span>
+
+      </div>
+
+
+
+
+<pre class="bz_comment_text">Hi Alejandro,
+
+Yes I think we understand – but we don’t have to be happy about it.  Is there another way to get the information?
+
+Josh, since it is your choice (that is you write the script), could you hold the info in an environment variable and both use it in the request and pass it into the script?
+
+Gareth
+
+From: <a href="mailto:bugs@schedmd.com">bugs@schedmd.com</a> [<a href="mailto:bugs@schedmd.com">mailto:bugs@schedmd.com</a>]
+Sent: Tuesday, 13 September 2016 9:52 PM
+To: Williams, Gareth (IM&amp;T, Clayton) &lt;<a href="mailto:Gareth.Williams@csiro.au">Gareth.Williams@csiro.au</a>&gt;
+Subject: [<a class="bz_bug_link 
+          bz_status_RESOLVED  bz_closed" title="RESOLVED INFOGIVEN - sacct gives wrong result for reqmem on occasion" href="https://bugs.schedmd.com/show_bug.cgi?id=3073">Bug 3073</a>] sacct gives wrong result for reqmem on occasion
+
+<a href="https://bugs.schedmd.com/show_bug.cgi?id=3073#c4">Comment # 4</a>&lt;<a class="bz_bug_link 
+          bz_status_RESOLVED  bz_closed" title="RESOLVED INFOGIVEN - sacct gives wrong result for reqmem on occasion" href="https://bugs.schedmd.com/show_bug.cgi?id=3073#c4">https://bugs.schedmd.com/show_bug.cgi?id=3073#c4</a>&gt; on <a class="bz_bug_link 
+          bz_status_RESOLVED  bz_closed" title="RESOLVED INFOGIVEN - sacct gives wrong result for reqmem on occasion" href="https://bugs.schedmd.com/show_bug.cgi?id=3073">bug 3073</a>&lt;<a class="bz_bug_link 
+          bz_status_RESOLVED  bz_closed" title="RESOLVED INFOGIVEN - sacct gives wrong result for reqmem on occasion" href="https://bugs.schedmd.com/show_bug.cgi?id=3073">https://bugs.schedmd.com/show_bug.cgi?id=3073</a>&gt; from Alejandro Sanchez&lt;<a href="mailto:alex@schedmd.com">mailto:alex@schedmd.com</a>&gt;
+
+Josh yes... it's just a matter of time. `sacct` command retrieves the ReqMem
+
+value from the &lt;cluster&gt;_job_table record for the submitted job record, and the
+
+record is created when jobacct_storage_p_job_start() runs. But while it runs
+
+the job script is run in parallel so if you need to `sacct` inside the job
+
+script itself you've to manually add some delay or wait for the job script to
+
+finish to `sacct` this job record. Please, let me know if this makes sense to
+
+you. Thanks.
+
+________________________________
+You are receiving this mail because:
+
+  *   You are on the CC list for the bug.</pre>
+    </div>
+
+    <div id="c6" class="bz_comment">
+
+      <div class="bz_comment_head">
+
+
+        <span class="bz_comment_number">
+          <a href="https://bugs.schedmd.com/show_bug.cgi?id=3073#c6">Comment 6</a>
+        </span>
+
+        <span class="bz_comment_user">
+          <span class="vcard"><span class="fn">Alejandro Sanchez</span>
+</span>
+        </span>
+
+        <span class="bz_comment_user_images">
+        </span>
+
+        <span class="bz_comment_time">
+          2016-09-13 07:02:38 MDT
+        </span>
+
+      </div>
+
+
+
+
+<pre class="bz_comment_text">--mem is also available from SLURM_MEM_PER_NODE env variable. So you could just set MEMREQUESTED = $SLURM_MEM_PER_NODE.</pre>
+    </div>
+
+    <div id="c7" class="bz_comment">
+
+      <div class="bz_comment_head">
+
+
+        <span class="bz_comment_number">
+          <a href="https://bugs.schedmd.com/show_bug.cgi?id=3073#c7">Comment 7</a>
+        </span>
+
+        <span class="bz_comment_user">
+          <span class="vcard"><span class="fn">Alejandro Sanchez</span>
+</span>
+        </span>
+
+        <span class="bz_comment_user_images">
+        </span>
+
+        <span class="bz_comment_time">
+          2016-09-13 07:31:45 MDT
+        </span>
+
+      </div>
+
+
+
+
+<pre class="bz_comment_text">Requested job memory is also available through the job submit plugins. For instance with Lua you can access the job_desc.pn_min_memory field.</pre>
+    </div>
+
+    <div id="c10" class="bz_comment">
+
+      <div class="bz_comment_head">
+
+
+        <span class="bz_comment_number">
+          <a href="https://bugs.schedmd.com/show_bug.cgi?id=3073#c10">Comment 10</a>
+        </span>
+
+        <span class="bz_comment_user">
+          <span class="vcard"><span class="fn">Josh Bowden</span>
+</span>
+        </span>
+
+        <span class="bz_comment_user_images">
+        </span>
+
+        <span class="bz_comment_time">
+          2016-09-13 17:17:22 MDT
+        </span>
+
+      </div>
+
+
+
+
+<pre class="bz_comment_text">Hi,
+
+That is what I was looking for! Perfect solution. I find no reference to it in the sbatch man pages though.
+
+Is there a chance that the man pages reflect what environment variables are set when a particular flag to sbatch is used? Having all the relevant information about a flag in its manual entry area would make new(er) users see the available options.
+i.e.
+man sbatch:
+--mem=&lt;MB&gt;
+              Specify the real memory required per node in MegaBytes.  Default value is DefMemPerNode and
+              the maximum value is MaxMemPerNode.
+             The value requested can be retrieved using environment variable SLURM_MEM_PER_NODE
+          …
+
+I’d also update that entry to indicate that GB can be used also.
+
+Thanks for your help.
+
+Josh.
+
+From: <a href="mailto:bugs@schedmd.com">bugs@schedmd.com</a> [<a href="mailto:bugs@schedmd.com">mailto:bugs@schedmd.com</a>]
+Sent: Tuesday, 13 September 2016 11:03 PM
+To: Bowden, Josh (IM&amp;T, St. Lucia) &lt;<a href="mailto:Josh.Bowden@csiro.au">Josh.Bowden@csiro.au</a>&gt;
+Subject: [<a class="bz_bug_link 
+          bz_status_RESOLVED  bz_closed" title="RESOLVED INFOGIVEN - sacct gives wrong result for reqmem on occasion" href="https://bugs.schedmd.com/show_bug.cgi?id=3073">Bug 3073</a>] sacct gives wrong result for reqmem on occasion
+
+<a href="https://bugs.schedmd.com/show_bug.cgi?id=3073#c6">Comment # 6</a>&lt;<a class="bz_bug_link 
+          bz_status_RESOLVED  bz_closed" title="RESOLVED INFOGIVEN - sacct gives wrong result for reqmem on occasion" href="https://bugs.schedmd.com/show_bug.cgi?id=3073#c6">https://bugs.schedmd.com/show_bug.cgi?id=3073#c6</a>&gt; on <a class="bz_bug_link 
+          bz_status_RESOLVED  bz_closed" title="RESOLVED INFOGIVEN - sacct gives wrong result for reqmem on occasion" href="https://bugs.schedmd.com/show_bug.cgi?id=3073">bug 3073</a>&lt;<a class="bz_bug_link 
+          bz_status_RESOLVED  bz_closed" title="RESOLVED INFOGIVEN - sacct gives wrong result for reqmem on occasion" href="https://bugs.schedmd.com/show_bug.cgi?id=3073">https://bugs.schedmd.com/show_bug.cgi?id=3073</a>&gt; from Alejandro Sanchez&lt;<a href="mailto:alex@schedmd.com">mailto:alex@schedmd.com</a>&gt;
+
+--mem is also available from SLURM_MEM_PER_NODE env variable. So you could just
+
+set MEMREQUESTED = $SLURM_MEM_PER_NODE.
+
+________________________________
+You are receiving this mail because:
+
+  *   You reported the bug.</pre>
+    </div>
+
+    <div id="c13" class="bz_comment">
+
+      <div class="bz_comment_head">
+
+
+        <span class="bz_comment_number">
+          <a href="https://bugs.schedmd.com/show_bug.cgi?id=3073#c13">Comment 13</a>
+        </span>
+
+        <span class="bz_comment_user">
+          <span class="vcard"><span class="fn">Alejandro Sanchez</span>
+</span>
+        </span>
+
+        <span class="bz_comment_user_images">
+        </span>
+
+        <span class="bz_comment_time">
+          2016-09-14 09:34:49 MDT
+        </span>
+
+      </div>
+
+
+
+
+<pre class="bz_comment_text">(In reply to Josh Bowden from <a href="https://bugs.schedmd.com/show_bug.cgi?id=3073#c10">comment #10</a>)
+<span class="quote">&gt; Is there a chance that the man pages reflect what environment variables are
+&gt; set when a particular flag to sbatch is used?</span>
+
+<span class="quote">&gt; I’d also update that entry to indicate that GB can be used also.</span>
+
+Josh, following commit addressed to Slurm 16.05.5 changes the documentation:
+
+<a href="https://github.com/SchedMD/slurm/commit/f62d3e708d">https://github.com/SchedMD/slurm/commit/f62d3e708d</a>
+
+I'm closing the ticket. Please reopen if you have further issues. Thanks.</pre>
+    </div>
+
+
+  
+
+</td>
+<td>
+</td>
+</tr></tbody></table>
+  </div>
+        
+
+</form>
+
+<hr>
+<ul class="related_actions">
+    <li><a href="https://bugs.schedmd.com/show_bug.cgi?format=multiple&amp;id=3073">Format For Printing</a></li>
+    <li>&nbsp;-&nbsp;<a href="https://bugs.schedmd.com/show_bug.cgi?ctype=xml&amp;id=3073">XML</a></li>
+    <li>&nbsp;-&nbsp;<a href="https://bugs.schedmd.com/enter_bug.cgi?cloned_bug_id=3073">Clone This Bug</a></li>
+    
+    <li>&nbsp;-&nbsp;<a href="#">Top of page </a></li>
+    </ul>
+
+<br>
+</div>
+
+    <div id="footer">
+      <div class="intro"></div>
+<ul id="useful-links">
+  <li id="links-actions"><ul class="links">
+  <li><a href="https://bugs.schedmd.com/">Home</a></li>
+  <li><span class="separator">| </span><a href="https://bugs.schedmd.com/enter_bug.cgi">New</a></li>
+  <li><span class="separator">| </span><a href="https://bugs.schedmd.com/describecomponents.cgi">Browse</a></li>
+  <li><span class="separator">| </span><a href="https://bugs.schedmd.com/query.cgi">Search</a></li>
+
+  <li class="form">
+    <span class="separator">| </span>
+    <form action="buglist.cgi" method="get" onsubmit="if (this.quicksearch.value == '')
+                  { alert('Please enter one or more search terms first.');
+                    return false; } return true;">
+    <input id="no_redirect_bottom" name="no_redirect" value="1" type="hidden">
+    <script type="text/javascript">
+      if (history && history.replaceState) {
+        var no_redirect = document.getElementById("no_redirect_bottom");
+        no_redirect.value = 1;
+      }
+    </script>
+    <input class="txt" id="quicksearch_bottom" name="quicksearch" title="Quick Search" type="text">
+    <input class="btn" value="Search" id="find_bottom" type="submit"></form>
+  <a href="https://bugs.schedmd.com/page.cgi?id=quicksearch.html" title="Quicksearch Help">[?]</a></li>
+
+  <li><span class="separator">| </span><a href="https://bugs.schedmd.com/report.cgi">Reports</a></li>
+
+  <li></li>
+
+
+  <li>
+        <span class="separator">| </span>
+        <a href="https://bugzilla.readthedocs.org/en/5.0/using/understanding.html" target="_blank">Help</a>
+      </li>
+    
+      <li id="new_account_container_bottom">
+        <span class="separator">| </span>
+        <a href="https://bugs.schedmd.com/createaccount.cgi">New&nbsp;Account</a>
+      </li>
+
+    <li id="mini_login_container_bottom">
+  <span class="separator">| </span>
+  <a id="login_link_bottom" href="https://bugs.schedmd.com/show_bug.cgi?id=3073&amp;GoAheadAndLogIn=1" onclick="return show_mini_login_form('_bottom')">Log In</a>
+
+  <form action="show_bug.cgi?id=3073" method="POST" class="mini_login bz_default_hidden" id="mini_login_bottom">
+    <input id="Bugzilla_login_bottom" required="" name="Bugzilla_login" class="bz_login" placeholder="Email Address" type="email">
+    <input class="bz_password" name="Bugzilla_password" id="Bugzilla_password_bottom" required="" placeholder="Password" type="password">
+    <input name="Bugzilla_login_token" value="1564748145-r_qyAGeJtTFRzQcEHfOYndl4xn1OVEAmukcD3UnD1sM" type="hidden">
+    <input name="GoAheadAndLogIn" value="Log in" id="log_in_bottom" type="submit">
+    <a href="#" onclick="return hide_mini_login_form('_bottom')">[x]</a>
+  </form>
+</li>
+
+
+  <li id="forgot_container_bottom">
+    <span class="separator">| </span>
+    <a id="forgot_link_bottom" href="https://bugs.schedmd.com/show_bug.cgi?id=3073&amp;GoAheadAndLogIn=1#forgot" onclick="return show_forgot_form('_bottom')">Forgot Password</a>
+    <form action="token.cgi" method="post" id="forgot_form_bottom" class="mini_forgot bz_default_hidden">
+      <label for="login_bottom">Login:</label>
+      <input name="loginname" size="20" id="login_bottom" required="" placeholder="Your Email Address" type="email">
+      <input id="forgot_button_bottom" value="Reset Password" type="submit">
+      <input name="a" value="reqpw" type="hidden">
+      <input id="token_bottom" name="token" value="1564748145-99S3HzWbcONfB6elAr9T8vrfTGCBDwztPV7OhG56oQI" type="hidden">
+      <a href="#" onclick="return hide_forgot_form('_bottom')">[x]</a>
+    </form>
+  </li>
+</ul>
+  </li>
+
+  
+
+
+
+
+  
+</ul>
+
+      <div class="outro"></div>
+    </div>
+
+  
+</body></html>

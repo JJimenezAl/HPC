@@ -1,0 +1,7 @@
+reqmem = memory that you asked from slurm. If it has type Mn, it is per node in MB, if Mc, then it is per core in MB
+maxrss = maximum amount of memory used at any time by any process in that job. This applies directly for serial jobs. For parallel jobs you need to multiply with the number of cores (max 16 or 24 as this is reported only for that node that used the most memory)
+averss = the average memory used per process (or core). To get the total memory need, multiply this with number of cores (but a maximum of 16 or 24 i.e. full node) in case you request memory with --mem=XXX and not --mem-per-cpu=XXX))
+elapsed = time it took to run your job
+
+https://research.csc.fi/-/a
+

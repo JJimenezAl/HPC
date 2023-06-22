@@ -1,0 +1,163 @@
+sacctmgr show configuration
+
+sreport cluster  utilization 
+ 
+sreport cluster  -t hours utilization
+sreport -t hours user topusage
+ 
+ 
+sacctmgr add account slurmaccount cluster="ClusterHPC" Description="Acceso STD a Power" Organization="ORG"
+#varias cuentas
+sacctmgr add user user02 Account=alurmaccount
+sacctmgr delete user user DefaultAccount=slurmaccount
+
+
+sacctmgr show account
+ 
+sacctmgr show account -s
+sacctmgr show association
+sacctmgr show association format=Account%40,User
+
+sacctmgr show association format=user,account%30  | grep user
+
+
+
+sacctmgr show association format=Account%40
+sacctmgr show qos format=name,priority
+
+sacctmgr add qos zebra
+
+sacctmgr modify qos zebra set priority=10
+
+
+sacctmgr show qos format=name,priority
+
+
+sacctmgr modify qos zebra set GrpCPUs=24
+
+sacctmgr modify user crock set qos=zebra
+
+sacctmgr show assoc format=cluster,user,qos
+
+#Users can belong to multiple qos 
+
+sacctmgr modify user crock set qos+=alligator
+
+sacctmgr show assoc format=cluster,user,qos
+
+delete a qos 
+
+sacctmgr delete qos alligator
+sacctmgr show stats
+
+https://wiki.fysik.dtu.dk/niflheim/Slurm_accounting#useful-commands
+
+
+sacctmgr add user example account=groupb
+sacctmgr modify user where user=user set defaultaccount=account
+sacctmgr modify user where user=user set defaultaccount=account
+sacctmgr modify user where name=user  cluster=ClusterHPC set account=account
+
+
+
+****Creacion de usuario
+useradd linuxuser
+usermod -aG linuxgroup linuxuser
+usermod -aG Sharedlinuxuser
+sacctmgr add user linuxuser DefaultAccount=slurmaccount
+
+sacctmgr remove user user
+sacctmgr add user user DefaultAccount=slurmaccount
+sacctmgr add user user DefaultAccount=slurmaccount
+
+Acordarse de refrescar wwulf
+
+***********
+
+
+
+
+*
+Memoria promedio, requerida
+
+sacct -o Jobname%20,Jobid,MaxRss,reqmem,averss
+
+Intersante la opcion -X que quita pasos intermedios
+ -a --all user
+
+
+#S start TIME E end Time
+sacct -S 2019-07-30 -u user -o JobID,JobName%20,MaxVMSize,MaxRSS,ReqMem,State,ExitCode,Elapsed
+sacct -S 2019-07-30 -u user --format=JobName,NNODES,NCPU,MaxRSS,AveRss,Elapsed,CPUtime
+sacct -s COMPLETED --format=JobID,JobName,MaxRSS,Elapsed,CPUTimeRAW,JobID,Start >> sacct.txt
+sacct --format=JobID,JobName,MaxRSS,Elapsed,CPUTimeRAW,JobID,Start,Comment
+
+*************
+*************date
+sacct -S 2019-08-02 -u user --format=JobName%20,State,NNODES,NCPU,MaxRSS,AveRss,Elapsed,CPUtime,CPUTimeRAw,ReqMem
+sacct -S 2020-01-01 -u user --format=JobName%20,State,NNODES,NCPU,MaxRSS,AveRss,Elapsed,CPUtime,CPUTimeRAw,ReqMem,TresUsageInmax%40
+sacct -S 2020-01-01 -E 2020-03-27 --user=user --format=User%20,Start,End,Elapsed,JobName,JobId,State
+ sacct -S 2020-01-01 -E 2020-03-27 -s COMPLETED --user=nbiproteo02 --format=User%20,Start,End,Elapsed,JobName,JobId,State
+sacct -S 2020-01-01 -E 2020-03-27 -s CANCELLED --user=user --format=User%20,Start,End,Elapsed,JobName,JobId,State,NNODES,NCPUS,CPUTimeRAw
+
+
+sacct --user=user--format=User%20,JobName,JobId,State,NNODES,NCPUS,CPUTimeRAw,Reqgres,AllocTRES%50
+
+**************
+*************
+*************
+*************
+
+#GRES
+
+sacct -a -X --format=JobID,AllocCPUS,Reqgres
+
+sacct -a -X -S 2020-03-03 -E 2021-03-31 --format=Jobname,Elapsed,NCPUS,Nnodes,State,Allocgres,Reqgres
+#acordarse que tiene que estar bien escrito el dispositivo en #SBATCH 
+
+Separando campos con |
+sacct -S 2019-07-30 -u user -p >/tmp/parseo2.txt
+sacct -S 2019-07-30 -u user -P >/tmp/parseo2.txt
+
+-p, --parsable
+    output will be '|' delimited with a '|' at the end
+
+-P, --parsable2
+    output will be '|' delimited without a '|' at the end 
+****
+
+
+
+((HORA(H2)+G2*24) +(MINUTO(H2)/60) + SEGUNDO(H2)/3600)*C2*D2*$S$2
+
+
+sacct -r PruebasNB -s COMPLETED --format=JobID,JobName,MaxRSS,Elapsed,CPUTimeRAW,JobID,Start >> NBsacct.txt
+
+
+
+
+ConsumedEnergy
+
+
+
+sacct -r PruebasNB --format=JobID,JobName,Start,Elapsed,MaxRSS,MaxVMSize,CPUTime,NCPUS,State,ConsumedEnergy> prueba.txt
+
+
+
+sacct -r test --format=JobID,JobName,Elapsed,CPUTime,Start,End,NNODES,NCPUS,CPUTime
+
+
+sacct -r test --format=JobID,JobName%30,State,Elapsed,CPUTime,Start,End,NNODES,NCPUS,CPUTime,ReqCPUS
+
+
+
+sacctmgr create account name=genomics fairshare=50
+# esta mas pensado para cuentas de accounting o grupos mas que usuarios
+
+sacct --format="JobID,JobName%30"
+
+
+mirar
+
+
+
