@@ -1,0 +1,14 @@
+
+slurmdbd -D -vvvv
+
+
+slurmdbd: Accounting storage MYSQL plugin failed
+slurmdbd: error: Couldn't load specified plugin name for accounting_storage/mysql: Plugin init() callback failed
+slurmdbd: error: cannot create accounting_storage context for accounting_storage/mysql
+slurmdbd: fatal: Unable to initialize accounting_storage/mysql accounting storage plugin
+
+
+ /usr/lib64/slurm/
+
+
+

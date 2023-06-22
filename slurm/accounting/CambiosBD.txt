@@ -1,0 +1,60 @@
+https://wiki.fysik.dtu.dk/niflheim/Slurm_database
+
+
+Acordarse en servidor BD
+sacctmgr add user slurm account=root adminlevel=admin
+
+CREATE USER slurm@localhost IDENTIFIED BY 'slurm';
+
+CREATE USER uperf@localhost IDENTIFIED BY 'uperf';
+
+SET PASSWORD FOR 'slurm'@'localhost' = PASSWORD('xxx');
+SET PASSWORD FOR 'root'@'localhost' = PASSWORD('xxx');
+SET PASSWORD FOR 'uperf'@'localhost' = PASSWORD('xxx');
+SET PASSWORD FOR 'bob'@localhost = PASSWORD("xxxx");
+
+
+CREATE DATABASE db1;
+Query OK, 1 row affected (0.18 sec)
+
+CREATE DATABASE slurm_acct_db;
+
+
+CREATE OR REPLACE DATABASE slurm_acct_db;
+
+GRANT ALL PRIVILEGES ON slurm_acct_db TO 'slurm'@'localhost';
+GRANT ALL PRIVILEGES ON slurm_acct_db.* TO 'uperf'@'localhost';
+
+
+GRANT ALL PRIVILEGES ON *.* TO 'uperf'@'localhost';
+REVOKE ALL ON *.* FROM 'uperf'@'localhost';
+#asi he dado permiso a todo a todas las tablas
+
+
+
+
+
+
+yum install mariadb-server mariadb-devel
+
+
+sacctmgr add cluster HPC
+sacctmgr show configuration
+
+
+
+DROP USER 'slurm'@'localhost';
+
+
+
+mysql -p
+grant all on slurm_acct_db.* TO 'slurm'@'localhost' identified by 'some_pass' with grant option;
+SHOW VARIABLES LIKE 'have_innodb';
+create database slurm_acct_db;
+quit;
+
+
+sacctmgr add cluster HPCloud
+
+
+ 
