@@ -1,0 +1,38 @@
+% srun -n 4 hostname
+hydra12
+hydra12
+hydra12
+hydra12
+% srun -n 4 --ntasks-per-node=1 hostname
+hydra12
+hydra13
+hydra14
+hydra15
+% srun -n 4 --ntasks-per-node=2 hostname
+hydra12
+hydra12
+hydra13
+hydra13
+% srun -n 4 --ntasks-per-socket=1 hostname
+hydra12
+hydra12
+hydra13
+hydra13
+% srun -n 4 --ntasks-per-core=1 hostname
+hydra12
+hydra12
+hydra12
+hydra12
+
+https://slurm.schedmd.com/mc_support.html
+
+
+
+--ntasks-per-node=n    number of tasks to invoke on each node
+--ntasks-per-socket=n  number of tasks to invoke on each socket
+--ntasks-per-core=n    number of tasks to invoke on each core
+
+
+
+
+srun --pty --jobid $JOBID -w $NODEID /bin/bash

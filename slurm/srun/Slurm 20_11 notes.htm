@@ -1,0 +1,233 @@
+﻿<!DOCTYPE HTML>
+<!-- saved from url=(0054)https://www.nsc.liu.se/support/batch-jobs/slurm/20.11/ -->
+<!DOCTYPE html PUBLIC "" ""><HTML><!-- Page html head section --><HEAD><META 
+content="IE=11.0000" http-equiv="X-UA-Compatible">
+	 <TITLE>Slurm 20.11 notes</TITLE>	 
+<META name="viewport" content="width=device-width, initial-scale=1.0">	 
+<META http-equiv="Content-Type" content="text/html; charset=utf-8">	 <!-- Bootstrap -->
+	 <LINK href="Slurm%2020_11%20notes_archivos/bootstrap-3.4.1.min.css" rel="stylesheet" 
+media="screen">	 <LINK href="Slurm%2020_11%20notes_archivos/custom.css" rel="stylesheet" 
+media="screen">	 <LINK href="/assets/img/favicon.png" rel="shortcut icon" type="image/x-icon">
+	 <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	 <!--[if lt IE 9]>
+		<script src="../../assets/js/html5shiv.js"></script>
+		<script src="../../assets/js/respond.min.js"></script>
+	<![endif]-->
+	 <!-- Typekit fonts -->	 
+<SCRIPT src="Slurm%2020_11%20notes_archivos/azj8jsj.js"></SCRIPT>
+	 
+<SCRIPT>try{Typekit.load({ async: true });}catch(e){}</SCRIPT>
+ 
+<META name="GENERATOR" content="MSHTML 11.00.10570.1001"></HEAD>	 
+<BODY>
+<DIV id="wrap"><!-- Top menu -->		 <NAV class="navbar navbar-default">
+<DIV class="container">
+<DIV class="navbar-header"><BUTTON class="navbar-toggle collapsed" 
+aria-expanded="false" aria-controls="navbar" type="button" data-toggle="collapse" 
+data-target="#navbar"><SPAN class="icon-bar"></SPAN><SPAN 
+class="icon-bar"></SPAN><SPAN class="icon-bar"></SPAN></BUTTON>		 <A class="navbar-brand" 
+href="https://www.nsc.liu.se/"><IMG alt="NSC" src="Slurm%2020_11%20notes_archivos/nsclogo.png" 
+border="0"></A>	 </DIV>
+<DIV class="collapse navbar-collapse" id="navbar">
+<UL class="nav navbar-nav pull-right">
+  <LI class="interm"><A href="https://www.nsc.liu.se/">Start</A></LI>
+  <LI><A href="https://www.nsc.liu.se/systems/">Systems</A></LI>
+  <LI><A href="https://www.nsc.liu.se/storage/">Storage</A></LI>
+  <LI><A href="https://www.nsc.liu.se/software/">Software</A></LI>
+  <LI><A href="https://www.nsc.liu.se/about/">About</A></LI>
+  <LI class="nav-login"><A title="Portal for new and existing users" class="scrollto" 
+  onclick="showCustomersArea();" href="https://www.nsc.liu.se/support/batch-jobs/slurm/20.11/#customers-area">User 
+  Area <SPAN class="caret"></SPAN></A></LI>
+  <LI class="interm" id="nav-search-icon"><A href="https://www.nsc.liu.se/support/batch-jobs/slurm/20.11/#"><IMG 
+  title="Search" onclick="$('#search-box').slideToggle(); return false;" alt="" 
+  src="Slurm%2020_11%20notes_archivos/header-search.png" border="0"></A></LI>
+  <LI class="nav-search" id="nav-search">
+  <FORM id="search-form1" onsubmit="return siteSearch1();" action="" method="get"><INPUT name="se" id="see" type="search"><IMG 
+  onclick="$('#search-form1').submit();" alt="" src="Slurm%2020_11%20notes_archivos/header-search.png" 
+  border="0">				 </FORM></LI></UL></DIV><!--/.nav-collapse -->	 
+<DIV class="search-box" id="search-box">
+<FORM id="search-form" onsubmit="return siteSearch();" action="" 
+method="get"><INPUT name="s" id="s" type="search"><BUTTON class="button" 
+onclick="$('#search-form').submit();">Search</BUTTON>
+		 </FORM></DIV></DIV></NAV>
+<DIV class="container"><!-- Menu for navigating to other pages at same folder level -->
+			 
+<DIV class="row subnav">
+<UL>
+  <LI><A id="subnav-slurm-20.11-notes" href="https://www.nsc.liu.se/support/batch-jobs/slurm/20.11/">Slurm 
+  20.11 notes</A></LI></UL></DIV>
+<DIV class="row">
+<DIV class="col-md-12">
+<OL class="breadcrumb">
+  <LI><A href="https://www.nsc.liu.se/index.html">NSC</A></LI>
+  <LI><A href="https://www.nsc.liu.se/support/index.html">User support</A></LI>
+  <LI><A href="https://www.nsc.liu.se/support/batch-jobs/index.html">Batch jobs 
+  and scheduling</A></LI>
+  <LI><A href="https://www.nsc.liu.se/support/batch-jobs/slurm/index.html">Slurm 
+  notes</A></LI>
+  <LI class="active">Slurm 20.11 notes</LI></OL></DIV></DIV>
+<DIV class="row article">
+<DIV class="col-md-12">
+<H2 id="slurm-20.11-changes">Slurm 20.11 changes</H2>
+<P>In Slurm 20.11 some changes have been made by <A href="https://www.schedmd.com/">SchedMD</A> 
+that we know will affect some NSC users. As far as NSC has been able to 
+determine, these changes are intentional and permanent, i.e we now need to 
+update our jobs to how Slurm works in the new version.</P>
+<P>The semantics of <CODE>srun</CODE> has changed, and if you use 
+<CODE>srun</CODE> today to launch job steps from within a job you may need to 
+change your job scripts to make them work with Slurm 20.11.</P>
+<P><STRONG>If you use mpprun or mpiexec.hydra to launch an MPI job and do not 
+use srun in your job script for anything else you are not affected by this 
+change.</STRONG></P>
+<P><STRONG>If your jobs only run on a single node and does not use srun you are 
+not affected by this change.</STRONG></P>
+<P>In most cases, jobs using srun will still run, but fewer job steps will 
+concurrently, so you will lose performance. Often, this results in only one CPU 
+core being used on each node (a slowdown of 97%).</P>
+<P>For an application that uses mpprun to launch the main application and then 
+use srun to start e.g a monitoring task on each node, the monitoring task might 
+not start or the monitoring task might start before the main application and 
+then block it from starting or from using all CPU cores.</P>
+<P><STRONG>Summary: if your application does not work, or runs slower, after the 
+upgrade to Slurm 20.11 you are probably affected by this change, and will need 
+to modify your job.</STRONG> In this case, please read the rest of this page for 
+hints on how to modify your job.</P>
+<P>If you need help modifying your jobs to work with Slurm 20.11, please contact 
+<A href="https://www.nsc.liu.se/support">NSC Support</A></P>
+<H3 
+id="example-1-using-srun-to-schedule-tasks-to-fill-all-available-cpus">Example 
+1: using srun to schedule tasks to fill all available CPUs</H3>
+<P>In earlier Slurm versions, this would work as expected (run 64 concurrent 
+tasks on the two assigned nodes until all 256 tasks have completed):</P>
+<PRE><CODE>#!/bin/bash
+#SBATCH -N2 --exclusive
+#
+for task in $(seq 1 256); do
+    srun -n1 -N1 --exclusive /somewhere/myapp $task &amp;
+done
+wait</CODE></PRE>
+<P>With Slurm 20.11, the above script will only run two concurrent tasks (one on 
+each node), leaving 62 of the 64 allocated CPUs idle!</P>
+<P>With Slurm 20.11, you can instead do:</P>
+<PRE><CODE>#!/bin/bash
+#SBATCH -N2 --exclusive
+#
+for task in $(seq 1 256); do
+    srun -n1 -N1 --exact --overlap /somewhere/myapp $task &amp;
+done
+wait</CODE></PRE>
+<P>Another option is to skip srun and use parallel and jobsh:</P>
+<PRE><CODE>#!/bin/bash
+#SBATCH -N2 --exclusive
+#
+module load parallel/20181122-nsc1
+seq 1 256 | parallel --ssh=jobsh -S $(hostlist -e -s',' -d  -p "$SLURM_CPUS_ON_NODE/" $SLURM_JOB_NODELIST) /somewhere/myapp {}</CODE></PRE>
+<P>In this example we use GNU Parallel and ask it to run as many tasks per node 
+as there are CPU cores on the node (<CODE>$SLURM_CPUS_ON_NODE</CODE>).</P>
+<H3 id="example-2-using-srun-to-launch-tasks-that-should-not-be-limited-to-the-available-cpus">Example 
+2: using srun to launch tasks that should not be limited to the available 
+CPUs</H3>
+<P>Sometimes we want to launch a monitoring task, a debugger or something 
+similar on all nodes in a job, but we don't want CPUs to be allocated to those 
+tasks and unavailable to the real application.</P>
+<P>To do this, you can either use <CODE>jobsh</CODE> (which is designed to mimic 
+<CODE>ssh</CODE> as far as possible while still using Slurm internally) or 
+<CODE>srun</CODE>. If you use <CODE>srun</CODE> you need to use certain options 
+to ensure that it does not attempt to allocate CPU or memory for the task.</P>
+<P>Example 1: use jobsh and loop over all nodes in the job</P>
+<PRE><CODE>#!/bin/bash
+#SBATCH -N2 --exclusive
+
+# Start one instance of monitorapp per node in the job, but
+# allocate no resources.
+for node in $(hostlist -e "$SLURM_JOB_NODELIST"); do
+   jobsh $node /somepath/monitorapp &amp;
+done
+
+# Start the main application
+mpprun /somepath/myapp</CODE></PRE>
+<P>Example 2: use srun (with the same options jobsh would use) to launch one 
+task per node in the job</P>
+<PRE><CODE>#!/bin/bash
+#SBATCH -N2 --exclusive
+
+# Start one instance of monitorapp per node in the job, but
+# allocate no resources.
+    srun --overlap --whole --mem-per-cpu=0 /somepath/monitorapp
+
+# Start the main application
+mpprun /somepath/myapp</CODE></PRE>
+<H3 id="using-srun-to-launch-an-mpi-application">Using srun to launch an MPI 
+application</H3>
+<P>If you use <CODE>srun</CODE> to launch your main MPI application, you should 
+probably switch to <CODE>mpprun</CODE> or <CODE>mpiexec.hydra</CODE> instead. 
+Contact <A href="https://www.nsc.liu.se/support">NSC Support</A> for more 
+information.</P>
+<H2 id="slurm-20.11-improvements">Slurm 20.11 improvements</H2>
+<P>It's not all bad news... Slurm 20.11 also fixes various bugs, especially one 
+that sometimes prevented GUI windows from being displayed when run on a compute 
+node.</P>
+<P>We also need to run a supported version to get security fixes, so staying at 
+Slurm 20.02 long-term is not an option.</P></DIV></DIV></DIV>
+<DIV class="container"><!-- Menu for navigating to pages at sub-folder level -->
+			 <BR></DIV></DIV><!-- end site wrap -->	 <!-- User area -->	 
+<DIV class="container-fluid" id="customers-area">
+<DIV class="customers-area-wrap" style="margin: 0px;">
+<DIV class="row">
+<DIV class="col-md-12">
+<DIV title="Portal for new and existing users" class="customers-area-toggle" 
+onclick="$('#customers-area-div').slideToggle(); return false;"><IMG title="Portal for new and existing users" 
+style="vertical-align: text-top;" alt="" src="Slurm%2020_11%20notes_archivos/ico-ca.png"> 
+User Area				 </DIV></DIV></DIV>
+<DIV class="customers-area-div" id="customers-area-div">
+<DIV class="row">
+<DIV class="col-md-6">
+<H3><A title="" href="https://www.nsc.liu.se/support/">User support</A></H3>
+<P>Guides, documentation and FAQ.</P></DIV>
+<DIV class="col-md-6">
+<H3><A title="" href="https://www.nsc.liu.se/access/">Getting access</A></H3>
+<P>Applying for projects and login accounts.</P></DIV></DIV>
+<DIV class="row">
+<DIV class="col-md-12"><!-- <div class="system-status"> -->						 <!-- 
+						 
+						-->
+												 
+<DIV class="alert alert-success system-status">
+<P class="bottom-vspace"><A title="System status" class="status" href="https://www.nsc.liu.se/systemstatus/">System 
+status</A></P>
+<H4>Everything OK!</H4>
+<P>No reported problems</P></DIV><!-- </div> -->				 </DIV></DIV>
+<DIV class="row">
+<DIV class="col-md-12">
+<H3>Self-service</H3>
+<DIV title="SNIC User and Project Repository" class="nsc-alert button" onclick="window.location='https://supr.snic.se/login/';">
+						SUPR					 </DIV>
+<DIV class="nsc-alert button" onclick="window.location='https://nim.nsc.liu.se/express/login/';">
+						NSC Express					 </DIV></DIV></DIV></DIV></DIV></DIV><!-- Footer -->	 
+<DIV id="footer">
+<DIV class="container narrow row-fluid">
+<DIV class="row">
+<DIV class="col-md-2 hidden-sm hidden-xs"><IMG title="" src="Slurm%2020_11%20notes_archivos/nsc-footer.png" 
+border="0">			 </DIV>
+<DIV class="col-md-3">
+<P><B>National Supercomputer Centre</B><BR>					Linköping University<BR>					581 
+83 LINKÖPING<BR>					SWEDEN					 <BR><BR>					Org.nr: 202100-3096<BR>
+					VAT.nr: SE202100309601<BR></P></DIV>
+<DIV class="col-md-3 hidden-sm hidden-xs">				E-mail: <A href="mailto:support@nsc.liu.se">support@nsc.liu.se</A><BR>
+				Tel.: <A href="callto:013281000">013-281000</A> (switchboard)<BR>				Fax.: 
+013-149403<BR><A href="https://www.nsc.liu.se/about/addresses">Further address 
+information</A>			 </DIV>
+<DIV class="col-md-4 hidden-sm hidden-xs">				NSC is part of Linköping 
+University and the Swedish National Infrastructure for Computing (SNIC).<BR><IMG 
+title="" src="Slurm%2020_11%20notes_archivos/liu-footer.png" border="0">
+				 <BR><BR><A href="https://www.nsc.liu.se/support/batch-jobs/slurm/20.11/#top">Top 
+of Page</A>			 </DIV></DIV></DIV></DIV><!-- Body tail -->	 <!-- Scripts to include just before the end-body tag -->
+	 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
+<SCRIPT src="Slurm%2020_11%20notes_archivos/jquery-1.11.3.min.js"></SCRIPT>
+ <!-- Include all compiled plugins (below), or include individual files as needed --> 
+<SCRIPT src="Slurm%2020_11%20notes_archivos/bootstrap-3.4.1.min.js"></SCRIPT>
+ 
+<SCRIPT src="Slurm%2020_11%20notes_archivos/grids.js" type="text/javascript"></SCRIPT>
+ 
+<SCRIPT src="Slurm%2020_11%20notes_archivos/site.js"></SCRIPT>
+	 </BODY></HTML>
