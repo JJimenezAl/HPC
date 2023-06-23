@@ -1,0 +1,141 @@
+mkdir /opt/ohpc/admin/images/prueba
+
+wwmkchroot
+/usr/bin/wwmkchroot [options] TEMPLATE_NAME PATH
+
+OPTIONS:
+    -d        Debug output
+    -h        Show usage
+
+TEMPLATE_NAME (select one of the following):
+   * centos-5             A clone of Red Hat Enterprise Linux 5
+   * centos-6             A clone of Red Hat Enterprise Linux 6
+   * centos-7             A clone of Red Hat Enterprise Linux 7
+   * debian7-32           A base 32 bit Debian wheezy chroot
+   * debian7-64           A base 64 bit Debian wheezy chroot
+   * debian-8             A base 64 bit Debian jessie chroot
+   * golden-system        Build a local chroot from a golden system
+   * opensuse-13
+   * rhel-7               A clone of Red Hat Enterprise Linux 7
+   * rhel-generic         A base RHEL chroot to match this build host
+   * sl-5                 Scientific Linux 5
+   * sl-6                 Scientific Linux 6
+   * sl-7                 Scientific Linux 7
+   * sles-11              SUSE Linux Enterprise 11SP3
+   * sles-12              SUSE Linux Enterprise 12
+   * ubuntu-16.04         A base 64 bit Ubuntu xenial chroot
+
+PATH:
+   This is the location where the VNFS will be created
+
+EXAMPLES:
+
+ # wwmkchroot rhel-generic /var/chroots/rhel
+ # wwmkchroot debian8-64 /var/chroots/deb8
+
+DESde ISO
+
+INSTALL_ISO="/var/tmp/SL-63-x86_64-2012-08-02-Everything-DVD1.iso,/var/tmp/SL-63-x86_64-2012-08-02-Everything-DVD2.iso"
+# export INSTALL_ISO
+# wwmkchroot sl-6 /var/chroots/sl-6
+Nota:Por defecto  wwmkchroot coge repositorio oficial.Se podria cambiar  export YUM_MIRROR=${BOS_MIRROR}
+
+
+ export CHROOT=/opt/ohpc/admin/images/Centos7
+
+
+compruebo por sia
+
+echo $CHROOT
+wwmkchroot centos-7 $CHROOT
+
+
+wwmkchroot centos-7 $CHROOT
+yum -y --installroot=$CHROOT install ohpc-base-compute
+
+cp -p /etc/resolv.conf $CHROOT/etc/resolv.conf
+
+yum -y --installroot=$CHROOT install ohpc-slurm-client
+yum -y --installroot=$CHROOT install ntp
+yum -y --installroot=$CHROOT install kernel
+yum -y --installroot=$CHROOT install lmod-ohpc
+
+wwinit database 
+ wwinit ssh_keys
+echo "192.168.219.128:/home /home nfs nfsvers=3,nodev,nosuid 0 0" >> $CHROOT/etc/fstab [sms]# echo "${sms_ip}:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=3,nodev 0 0" >> $CHROOT/etc/fstab
+
+echo "192.168.219.128:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=3,nodev 0 0" >> $CHROOT/etc/fstab
+
+#Suponemos todo exportado en el master
+
+chroot $CHROOT systemctl enable ntpd 
+echo "server 192.168.219.128" >> $CHROOT/etc/ntp.conf
+
+opcionales IB, nagios, clientes almacenamiento...
+
+Si queremos no login no ser que tengan trabajo en slurm
+echo "account required pam_slurm.so" >> $CHROOT/etc/pam.d/sshd
+
+
+# Configure SMS to receive messages and reload rsyslog configuration
+perl -pi -e "s/\\#\\\$ModLoad imudp/\\\$ModLoad imudp/" /etc/rsyslog.conf
+perl -pi -e "s/\\#\\\$UDPServerRun 514/\\\$UDPServerRun 514/" /etc/rsyslog.conf
+systemctl restart rsyslog
+# Define compute node forwarding destination
+echo "*.* @${192.168.219.128}:514" >> $CHROOT/etc/rsyslog.conf
+# Disable most local logging on computes. Emergency and boot logs will remain on the compute nodes 
+perl -pi -e "s/^\*\.info/\\#\*\.info/" $CHROOT/etc/rsyslog.conf
+perl -pi -e "s/^authpriv/\\#authpriv/" $CHROOT/etc/rsyslog.conf
+perl -pi -e "s/^mail/\\#mail/" $CHROOT/etc/rsyslog.conf 
+perl -pi -e "s/^cron/\\#cron/" $CHROOT/etc/rsyslog.conf
+perl -pi -e "s/^uucp/\\#uucp/" $CHROOT/etc/rsyslog.conf
+
+
+
+
+wwsh file import /etc/passwd
+wwsh file import /etc/group
+wwsh file import /etc/shadow
+
+wwsh file import /etc/slurm/slurm.conf 
+wwsh file import /etc/munge/munge.key
+
+
+export WW_CONF=/etc/warewulf/bootstrap.conf
+echo "drivers += updates/kernel/" >> $WW_CONF
+# (Optional) Include overlayfs drivers; needed by Singularity 
+echo "drivers += overlay" >> $WW_CONF
+# Build bootstrap image
+
+
+
+wwbootstrap `uname -r`
+
+##Assemble
+wwvnfs --chroot $CHROOT
+
+
+
+wwsh -y node new Node1 --ipaddr=192.168.219.220 --hwaddr=00:50:56:35:5B:4B -D eno16777736
+wwsh -y node new Node2 --ipaddr=192.168.219.221 --hwaddr=00:50:56:2B:A3:0C -D eno16777736
+wwsh -y node new Node3 --ipaddr=192.168.219.222 --hwaddr=00:50:56:21:31:D4 -D eno16777736
+
+
+wwsh -y provision set "Node[1-3]" --vnfs=centos7 --bootstrap=`uname -r`  --files=dynamic_hosts,passwd,group,shadow,slurm.conf,munge.key
+
+
+
+SI hay problemas que no sincronizan todos lso ficheros a la vez mira a ver esta sopciones
+
+#StartServers       8
+#MinSpareServers    5
+#MaxSpareServers   30
+#ServerLimit      256
+
+
+irian en el httpd de warewulf? no el el general
+MIrar en etc/httpd
+
+
+
+
