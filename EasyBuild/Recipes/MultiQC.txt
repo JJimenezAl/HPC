@@ -1,0 +1,18 @@
+
+
+#Easybuild
+eb libyaml-0.2.2-GCCcore-9.3.0.eb --installpath-modules=/opt/shared/modules/ --installpath-software=/opt/shared/apps --robot --buildpath=/data/scratch/user/temp/
+eb Eigen-3.3.7-GCCcore-9.3.0.eb --installpath-modules=/opt/shared/modules/ --installpath-software=/opt/shared/apps --robot --buildpath=/data/scratch/user/temp/
+eb Perl-5.30.2-GCCcore-9.3.0-minimal.eb --installpath-modules=/opt/shared/modules/ --installpath-software=/opt/shared/apps --robot --buildpath=/data/scratch/user/temp/
+eb makeinfo-6.7-GCCcore-9.3.0-minimal.eb --installpath-modules=/opt/shared/modules/ --installpath-software=/opt/shared/apps --robot --buildpath=/data/scratch/user/temp/
+eb pybind11-2.4.3-GCCcore-9.3.0-Python-3.8.2.eb  --installpath-modules=/opt/shared/modules/ --installpath-software=/opt/shared/apps --robot --buildpath=/data/scratch/user/temp/
+eb PyYAML-5.3-GCCcore-9.3.0.eb --installpath-modules=/opt/shared/modules/ --installpath-software=/opt/shared/apps --robot --buildpath=/data/scratch/user/temp/
+eb SciPy-bundle-2020.03-foss-2020a-Python-3.8.2.eb --installpath-modules=/opt/shared/modules/ --installpath-software=/opt/shared/apps --buildpath=/data/scratch/user/temp/ --rebuild
+
+
+eb Tkinter-3.8.2-GCCcore-9.3.0.eb --installpath-modules=/opt/shared/modules/ --installpath-software=/opt/shared/apps --robot --buildpath=/data/scratch/user/temp/
+eb matplotlib-3.2.1-foss-2020a-Python-3.8.2.eb --installpath-modules=/opt/shared/modules/ --installpath-software=/opt/shared/apps --robot --buildpath=/data/scratch/user/temp/
+eb networkx-2.4-foss-2020a-Python-3.8.2.eb --installpath-modules=/opt/shared/modules/ --installpath-software=/opt/shared/apps --robot --buildpath=/data/scratch/user/temp/
+eb MultiQC-1.9-foss-2020a-Python-3.8.2.eb --installpath-modules=/opt/BioInformatics/modules/ --installpath-software=/opt/BioInformatics/apps --robot --buildpath=/data/scratch/user/temp/
+
+

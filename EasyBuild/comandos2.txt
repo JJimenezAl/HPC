@@ -1,0 +1,123 @@
+module availmodule load EasyBuild
+
+echo $MODULEPATH
+
+Si no aparecen automatico hacer manual  
+module use --append /software/wrf/modules/all/
+module use --append /software/shared/modules/all/
+module use --append /opt/ohpc/pub/modulefiles/
+module use --append /opt/ohpc/pub/moduledeps/gnu8
+module use --append /opt/ohpc/pub/moduledeps/gnu7
+module use --append /opt/shared/modules/all
+module use --append /opt/BioInformatics/SingleCell/modules/all
+module use --apend /opt/shared/modules/all
+
+#meterlos  rutas en cat /etc/profile.d/lmod.sh
+
+
+#POWER
+module use --append  /opt/sharedPower/modules/all/
+
+
+module use --append /opt/ohpc/pub/moduledeps/intel/
+
+module unuse --append /software/NBInagen/modules/all
+
+module use --append /opt/BioInformatics/SingleCell/modules/all
+
+
+module unuse /opt/ohpc/pub/modulefiles
+
+
+module available
+
+module --ignore_cache avail
+rm -rf ~/.lmod.d/.cache
+
+ml 
+module load 
+o modificar  /etc/profile.d/lmod.sh #MAS ABAJO#
+eb --show-config
+eb  --install-latest-eb-release
+eb  --install-latest-eb-release --installpath-modules=/shared/modules/ --installpath-software=/shared/apps --robot 
+eb --search VEP
+eb -S VEP
+eb -D VEP
+#Muestra dependencias
+eb -x VEP
+Muestra extended dry-run. Dpendencias y se supone que ejecuta instalacion. A veces dice que todo ok pero luego no lo instala
+
+
+eb --list-toolchains
+
+
+/opt/ohpc/pub/libs/easybuild/3.8.1/software/EasyBuild/3.8.1/lib/python2.7/site-packages/easybuild_easyconfigs-3.8.1-py2.7.egg/easybuild/easyconfigs
+
+## Instalaciones
+
+
+--buildpath=/tmp/
+--rebuild
+--allow-loaded-modules mejor no la uso y descargo modulos antes de nuevas instalaciones (Si no le gusta por algo será)
+eb Python-3.7.0-foss-2018b.eb --installpath-modules=/software/shared/modules/all --installpath-software=/software/shared/apps --robot
+eb Mono-6.4.0.198-foss-2018b.eb --installpath-modules=/software/shared_power9/modules ----installpath-software=/software/shared_power9/apps --robot
+
+
+
+eb R-3.6.2-foss-2019b.eb --installpath-modules=/opt/shared/modules --installpath-software=/opt/shared/apps --robot --buildpath=/data/scratch/user/temp 
+eb Seurat-2.3.4-foss-2018b-R-3.5.1.eb --installpath-modules=/software/NBInagen/modules/ --installpath-software=/software/NBInagen/apps --robot
+
+eb Java-1.8.0_152.eb --installpath-modules=/software/shared/modules --installpath-software=/software/shared/apps --robot
+eb  OpenFOAM-7-foss-2019b.eb  --installpath-modules=/software/wrf/modules --installpath-software=/software/wrf/apps --robot --buildpath=/tmp/ --rebuild
+eb DBD-mysql-4.048-foss-2018b-Perl-5.28.0.eb --installpath-modules=/software/shared/modules --installpath-software=/software/shared/apps --robot --allow-loaded-modules=Perl,Bison,XZ
+
+eb DBD-mysql-4.048-foss-2018b-Perl-5.28.0.eb --installpath-modules=/software/shared/modules --installpath-software=/software/shared/apps --robot --allow-loaded-modules=Perl,Bison,XZ,bzip2,GCCcore,EasyBuild
+
+
+eb -r --force --detect-loaded-modules=error --allow-loaded-modules=EasyBuild --include-easyblocks-from-pr 2323 /apps/easybuild/software/infer-skylake/EasyBuild/4.3.2/easybuild/easyconfigs/b/binutils/binutils-2.35.eb
+
+
+
+cat /software/NBInagen/modules/all/BioPerl/1.7.2-foss-2017b-Perl-5.26.0.lua
+
+ls /software/NBInagen/apps/BioPerl/1.7.2-foss-2017b-Perl-5.26.0/easybuild/
+
+
+module show
+directorio sw
+modulo
+
+
+eb X11-20171023-GCCcore-6.4.0.eb --inject-checksums --force
+== temporary log file in case of crash /tmp/eb-32Je7c/easybuild-PjNlUp.log
+== processing EasyBuild easyconfig /tmp/tmpRRiJcZ/EasyBuild-3.9.1.eb
+== building and installing EasyBuild/3.9.1...
+== fetching files...
+
+
+
+eb SearchGUI-3.3.3-Java-1.8.0_152.eb -D
+vi BWA-0.7.17-foss-2018b.eb
+
+
+
+eb  WRF-3.6.1-foss-2015a-dmpar.eb  --installpath-modules=/software/cener/modules --installpath-software=/software/cener/apps --robot --allow-loaded-modules=Qt5
+
+eb Eigen-3.3.4.eb --installpath-modules=/software/cener/modules --installpath-software=/software/cener/apps --robot
+eb OpenFOAM-6-foss-2018b.eb --installpath-modules=/software/cener/modules --installpath-software=/software/cener/apps --robot  --allow-loaded-modules=Qt5
+eb Qt5-5.10.1-foss-2018b.eb --installpath-modules=/software/cener/modules --installpath-software=/software/cener/apps --robot
+
+eb  OpenFOAM-v1812-foss-2018b.eb   --installpath-modules=/software/cener/modules --installpath-software=/software/cener/apps --robot
+
+#si no se ven modules inicio de usuario no en pantalla para module available o que resuelve robot
+
+
+echo $MODULEPATH
+
+##Modifico /etc/profile.d/lmod.sh
+
+
+#Ejemplo NavarraBiomed ubicacion BioInformatics/SingleCell/modules/all
+eb SAMtools-1.9-foss-2018b.eb  --installpath-modules=/opt/BioInformatics/modules/  --installpath-software=/opt/BioInformatics/apps --robot --buildpath=/data/scratch/user/temp 
+
+

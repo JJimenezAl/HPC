@@ -1,0 +1,87 @@
+/software/NBInagen/modules/all
+
+module use --append /software/NBInagen/modules/all
+
+eb libunwind-1.2.1-GCCcore-7.3.0.eb --installpath-modules=/software/shared/modules --installpath-software=/software/shared/apps --robot
+
+
+eb Seurat-2.3.4-foss-2018b-R-3.5.1.eb --installpath-modules=/opt/SingleCell/modules/ --installpath-software=/opt/SingleCell/apps --robot 
+
+
+eb CellRanger-3.1.0.eb --installpath-modules=/opt/BioInformatics/SingleCell/modules --installpath-software=/opt/BioInformatics/SingleCell/apps --robot --buildpath=/tmp/
+
+
+module use --append /opt/BioInformatics/SingleCell/modules/all
+module use --apend /opt/shared/modules/all
+
+
+eb R-3.6.2-foss-2019b.eb --installpath-modules=/opt/shared/modules --installpath-software=/opt/shared/apps --robot --buildpath=/data/scratch/user/temp 
+
+
+
+eb GCCcore-8.3.0.eb --installpath-modules=/opt/shared/modules --installpath-software=/opt/shared/apps --robot --buildpath=/data/scratch/user/temp 
+
+
+eb binutils/2.32 --installpath-modules=/opt/shared/modules --installpath-software=/opt/shared/apps --robot --buildpath=/data/scratch/user/temp --rebuild
+eb binutils/2.32 --buildpath=/data/scratch/user/temp --rebuild
+
+eb R-3.6.2-foss-2019b.eb --installpath-modules=/opt/shared/modules --installpath-software=/opt/shared/apps --robot --buildpath=/data/scratch/user/temp 
+
+eb  Python-3.7.4-GCCcore-8.3.0.eb --installpath-modules=/software/shared/modules --installpath-software=/software/shared/apps --buildpath=/data/scratch/user/temp 
+
+eb binutils-2.32.eb --installpath-modules=/opt/shared/modules --installpath-software=/opt/shared/apps --
+
+eb Python-3.7.4-GCCcore-8.3.0.eb -include-easyblocks-from-pr 2323 --buildpath=/data/scratch/user/temp --rebuild
+
+
+#####
+#####
+
+eb -r --force --detect-loaded-modules=error --allow-loaded-modules=EasyBuild --include-easyblocks-from-pr 2323 /apps/easybuild/software/infer-skylake/EasyBuild/4.3.2/easybuild/easyconfigs/b/binutils/binutils-2.35.eb
+
+eb -r --force --detect-loaded-modules=error --allow-loaded-modules=EasyBuild --include-easyblocks-from-pr 2323 /apps/easybuild/software/infer-skylake/EasyBuild/4.3.2/easybuild/easyconfigs/b/binutils/binutils-2.35.eb
+
+
+eb -r --force --detect-loaded-modules=error --allow-loaded-modules=EasyBuild --include-easyblocks-from-pr 2323  --installpath-modules=/opt/shared/modules --installpath-software=/opt/shared/apps --buildpath=/data/scratch/user/temp /software/shared/apps/EasyBuild/4.3.2/easybuild/easyconfigs/b/binutils/binutils-2.32.eb 
+eb -r --force --detect-loaded-modules=error --allow-loaded-modules=EasyBuild --include-easyblocks-from-pr 2323  --installpath-modules=/opt/shared/modules --installpath-software=/opt/shared/apps --buildpath=/data/scratch/user/temp /software/shared/apps/EasyBuild/4.3.2/easybuild/easyconfigs/b/binutils/binutils-2.32-GCCcore-8.3.0.eb 
+
+
+eb -r --force --detect-loaded-modules=error --allow-loaded-modules=EasyBuild --include-easyblocks-from-pr 2323 binutils/2.32-GCCcore-8.3.0
+
+eb -r --force --detect-loaded-modules=error --allow-loaded-modules=EasyBuild --include-easyblocks-from-pr 2323 Python-3.7.4-GCCcore-8.3.0.eb
+
+/software/shared/apps/EasyBuild/4.3.2/easybuild/easyconfigs/b/binutils/binutils-2.32-GCCcore-8.3.0.eb
+
+/software/shared/apps/EasyBuild/4.3.2/easybuild/easyconfigs/b/binutils/binutils-2.32.eb
+#####
+####
+
+plan B
+
+Mas version de r
+R-4.0.0-foss-2020a.eb 
+eb R-4.0.0-foss-2020a.eb --installpath-modules=/opt/shared/modules --installpath-software=/opt/shared/apps --buildpath=/data/scratch/user/temp --robot 
+
+eb Ninja-1.10.0-GCCcore-9.3.0.eb --installpath-modules=/opt/shared/modules --installpath-software=/opt/shared/apps --buildpath=/data/scratch/user/temp
+
+GCCcore-9.3.0.eb
+
+
+
+192.168.141.62:/opt/shared/ /opt/shared nfs nfsvers=4,nodev,noatime 0 0
+192.168.141.62:/opt/BioInformatics/ /opt/BioInformatics nfs nfsvers=4,nodev,noatime 0 0
+
+
+module use --append /software/NBInagen/modules/all
+module use --append /opt/BioInformatics/SingleCell/modules/all
+module use --apend /opt/shared/modules/all
+
+eb R-4.0.0-foss-2020a.eb  --installpath-modules=/opt/shared/modules --installpath-software=/opt/shared/apps --robot --buildpath=/tmp/ --buildpath=/data/scratch/user/temp  --robot
+eb Seurat-2.3.4-foss-2018b-R-3.5.1.eb --installpath-modules=/opt/SingleCell/modules/ --installpath-software=/opt/SingleCell/apps --robot --buildpath=/data/scratch/user/temp  --robot
+
+
+eb Seurat-3.1.5-foss-2020a-R-4.0.0.eb --installpath-modules=/opt/BioInformatics/SingleCell/modules --installpath-software=/opt/BioInformatics/SingleCell/apps --buildpath=/data/scratch/user/temp  --robot
+eb CellRanger-5.0.0.eb --installpath-modules=/opt/BioInformatics/SingleCell/modules --installpath-software=/opt/BioInformatics/SingleCell/apps --buildpath=/data/scratch/user/temp
+
+
+
