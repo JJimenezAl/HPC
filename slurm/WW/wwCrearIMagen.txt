@@ -137,5 +137,7 @@ irian en el httpd de warewulf? no el el general
 MIrar en etc/httpd
 
 
-
+NO me monntaba /dev/sda y he tenido que crear particion en modo recovery con fdisk y mkf.ext4
+MIrar como inicializa raid para ver si se puede automatizar
+ejemplo:wwsh provision set node003 -f /etc/warewulf/filesystem/my_partitioning.cmds
 
