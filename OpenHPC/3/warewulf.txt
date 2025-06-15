@@ -1,0 +1,64 @@
+wwulf from scratch
+rm -rf  /opt/ohpc/admin/images/rocky9.3
+wwsh vnfs delete rocky9.3
+wwsh node delete node1
+export CHROOT=/opt/ohpc/admin/images/rocky9.3
+wwmkchroot -v rocky-9 $CHROOT
+
+dnf -y --installroot $CHROOT install epel-release
+cp -p /etc/yum.repos.d/OpenHPC*.repo $CHROOT/etc/yum.repos.d
+yum -y --installroot=$CHROOT install ohpc-base-compute
+
+
+cp -p /etc/resolv.conf $CHROOT/etc/resolv.conf
+
+cp /etc/passwd /etc/group $CHROOT/etc
+
+yum -y --installroot=$CHROOT install ohpc-slurm-client
+
+echo SLURMD_OPTIONS="--conf-server 10.10.10.10" > $CHROOT/etc/sysconfig/slurmd
+
+yum -y --installroot=$CHROOT install chrony
+echo "server 10.10.10.10 iburst" >> $CHROOT/etc/chrony.conf
+yum -y --installroot=$CHROOT install kernel-`uname -r`
+yum -y --installroot=$CHROOT install lmod-ohpc
+
+
+wwinit database
+wwinit ssh_keys
+
+echo "master:/home /home nfs nfsvers=4,nodev,nosuid 0 0" >> $CHROOT/etc/fstab
+echo "master:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=3,nodev 0 0" >> $CHROOT/etc/fstab
+
+echo "/home *(rw,no_subtree_check,fsid=10,no_root_squash)" >> /etc/exports
+echo "/opt/ohpc/pub *(ro,no_subtree_check,fsid=11)" >> /etc/exports
+
+exportfs -a
+systemctl restart nfs-server
+systemctl enable nfs-server
+
+echo "account required pam_slurm.so" >> $CHROOT/etc/pam.d/sshd
+
+yum -y --installroot=$CHROOT install nhc-ohpc
+
+echo "HealthCheckProgram=/usr/sbin/nhc" >> /etc/slurm/slurm.conf
+echo "HealthCheckInterval=300" >> /etc/slurm/slurm.conf # execute every five minutes
+
+wwsh file import /etc/passwd
+wwsh file import /etc/group
+wwsh file import /etc/shadow
+wwsh file import /etc/munge/munge.key
+wwsh file import /etc/hosts
+wwsh file import /etc/slurm/slurm.conf
+
+
+wwbootstrap `uname -r`
+wwvnfs --chroot $CHROOT
+
+
+
+wwsh -y node new node1 --ipaddr=10.10.10.100 --hwaddr=00:0C:29:06:C7:D7 -D ens224
+wwsh -y provision set "node1" --vnfs=rocky9.3 --bootstrap=`uname -r` --files=dynamic_hosts,passwd,group,shadow,munge.key,slurm.conf
+
+systemctl restart dhcpd
+wwsh pxe update

@@ -1,0 +1,11 @@
+#wwmkchroot -u opt/ohpc/admin/images/rocky9.3 
+
+export CHROOT=/opt/ohpc/admin/images/rocky9.3
+#cppy new files
+wwsh file import /etc/hosts
+wwsh file import /etc/slurm/slurm.conf
+
+wwvnfs --chroot $CHROOT
+
+#wwvnfs --chroot opt/ohpc/admin/images/rocky9.3 --kernelpath /boot/vmlinuz-<version>
+

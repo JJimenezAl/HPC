@@ -1,0 +1,82 @@
+
+#add host to /etc/hosts
+systemctl disable firewalld
+systemctl stop firewalld
+##disable selinux
+
+#this instruction according the manual gives error
+#yum install http://repos.openhpc.community/OpenHPC/3/EL_9/aarch64/ohpc-release-3-1.el9.aarch64.rpm
+
+yum install http://repos.openhpc.community/OpenHPC/3/EL_9/x86_64/ohpc-release-3-1.el9.x86_64.rpm
+
+yum install dnf-plugins-core
+yum config-manager --set-enabled crb
+
+# Install base meta-packages
+yum -y install ohpc-base
+yum -y install ohpc-warewulf
+
+
+# Install slurm server meta-package
+yum -y install ohpc-slurm-server
+# Use ohpc-provided file for starting SLURM configuration
+cp /etc/slurm/slurm.conf.ohpc /etc/slurm/slurm.conf
+# Setup default cgroups file
+cp /etc/slurm/cgroup.conf.example /etc/slurm/cgroup.conf
+# Identify resource manager hostname on master host
+perl -pi -e "s/SlurmctldHost=\S+/SlurmctldHost=Master/" /etc/slurm/slurm.conf
+
+
+perl -pi -e "s/device = eth1/device = ens224 /" /etc/warewulf/provision.conf
+
+ip link set dev ens224 up
+ip address add 192.168.10.10/24 ens224
+
+systemctl enable httpd.service
+systemctl restart httpd
+systemctl enable dhcpd.service
+systemctl enable tftp.socket
+systemctl start tftp.socket
+
+
+export CHROOT=/opt/ohpc/admin/images/rocky9.2
+
+wwmkchroot -v rocky-9 $CHROOT
+dnf -y --installroot $CHROOT install epel-release
+cp -p /etc/yum.repos.d/OpenHPC*.repo $CHROOT/etc/yum.repos.d
+yum -y --installroot=$CHROOT install ohpc-base-compute
+
+dnf -y --installroot $CHROOT group install "Server with GUI"
+cp -p /etc/resolv.conf $CHROOT/etc/resolv.confA
+cp /etc/passwd /etc/group $CHROOT/etc
+yum -y --installroot=$CHROOT install ohpc-slurm-client
+
+
+
+#prueba
+
+dnf -y --installroot $CHROOT group install "Server with GUI"
+chroot $CHROOT systemctl enable munge
+chroot $CHROOT systemctl set-default multi-user.target
+chroot $CHROOT systemctl isolate multi-user.target
+
+
+#needed?
+mount --bind /proc /opt/ohpc/admin/images/rocky9.2/proc/
+mount --bind /sys /opt/ohpc/admin/images/rocky9.2/sys
+mount --bind /dev /opt/ohpc/admin/images/rocky9.2/dev
+
+
+echo SLURMD_OPTIONS="--conf-server 192.168.10.10" > $CHROOT/etc/sysconfig/slurmd
+yum -y --installroot=$CHROOT install chrony
+
+echo "server 192.168.1010 iburst" >> $CHROOT/etc/chrony.conf
+yum -y --installroot=$CHROOT install kernel-`uname -r`
+
+yum -y --installroot=$CHROOT install lmod-ohpc
+
+pag 12
+
+
+
+

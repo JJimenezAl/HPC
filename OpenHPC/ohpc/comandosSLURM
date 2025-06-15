@@ -1,0 +1,9 @@
+https://www.rc.fas.harvard.edu/resources/documentation/convenient-slurm-commands/
+
+scontrol ping 
+
+sinfo -a Supone que nodos activos
+sinfo -d Nodos muertos
+
+sudo scontrol update Nodename=Centos state=RESUME
+

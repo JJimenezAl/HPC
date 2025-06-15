@@ -1,0 +1,170 @@
+
+echo $(cat /etc/hostname) $(hostname -I | awk '{print $1}') >>/etc/hosts
+systemctl disable firewalld
+systemctl stop firewalld
+
+dnf install http://repos.openhpc.community/OpenHPC/3/EL_9/x86_64/ohpc-release-3-1.el9.x86_64.rpm
+
+dnf -y install dnf-plugins-core
+dnf config-manager --set-enabled crb
+
+#install base meta-packages
+dnf -y install ohpc-base
+dnf -y install ohpc-warewulf
+dnf -y install hwloc-ohpc
+
+#for PXE
+
+#ipmitool -E -I lanplus -H${bmc_ipaddr} -U root chassis bootdev pxe options=persistent
+
+
+systemctl enable chronyd.service
+echo "local stratum 10" >> /etc/chrony.conf
+echo "server${ntp_server}" >> /etc/chrony.conf
+echo "allow all" >> /etc/chrony.conf
+systemctl restart chronyd
+
+
+dnf -y install ohpc-slurm-server
+cp /etc/slurm/slurm.conf.ohpc /etc/slurm/slurm.conf
+cp /etc/slurm/cgroup.conf.example /etc/slurm/cgroup.conf
+sudo sed -i 's/SlurmctldHost=[^ ]*/SlurmctldHost=master/' /etc/slurm/slurm.conf
+
+
+perl -pi -e "s/device = eth1/device =nombreNIC/" /etc/warewulf/provision.conf
+
+#ip link set decho "master:/home /home nfs nfsvers=4,nodev,nosuid 0 0" >> $CHROOT/etc/fstab
+echo "master:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=3,nodev 0 0" >> $CHROOT/etc/fstab
+
+echo "/home *(rw,no_subtree_check,fsid=10,no_root_squash)" >> /etc/exports
+echo "/opt/ohpc/pub *(ro,no_subtree_check,fsid=11)" >> /etc/exports
+
+exportfs -a
+systemctl restart nfs-server
+systemctl enable nfs-server
+
+echo "account required pam_slurm.so" >> $CHROOT/etc/pam.d/sshd
+
+yum -y --installroot=$CHROOT install nhc-ohpc
+
+echo "HealthCheckProgram=/usr/sbin/nhc" >> /etc/slurm/slurm.conf
+echo "HealthCheckInterval=300" >> /etc/slurm/slurm.conf # execute every five minutes
+
+wwsh file import /etc/passwd
+wwsh file import /etc/group
+wwsh file import /etc/shadow
+wwsh file import /etc/munge/munge.key
+wwsh file import /etc/hosts
+wwsh file import /etc/slurm/slurm.conf
+ev${sms_eth_internal} up
+#ip address add${sms_ip}/${internal_netmask} broadcast + dev${sms_eth_internal}
+ip address add 10.10.10.1/24 broadcast + dev 10.10.10.10
+
+systemctl enable httpd.service
+systemctl restart httpd
+systemctl enable dhcpd.service
+systemctl enable tftp.socket
+systemctl start tftp.socket
+
+#  Build initial BOS image
+
+export CHROOT=/opt/ohpc/admin/images/rocky9.3
+
+wwmkchroot -v rocky-9 $CHROOT
+dnf -y --installroot $CHROOT install epel-release
+cp -p /etc/yum.repos.d/OpenHPC*.repo $CHROOT/etc/yum.repos.d
+dnf -y --installroot=$CHROOT install ohpc-base-compute
+
+cp -p /etc/resolv.conf $CHROOT/etc/resolv.conf
+
+cp /etc/passwd /etc/group $CHROOT/etc
+
+dnf -y --installroot=$CHROOT install ohpc-slurm-client
+chroot $CHROOT systemctl enable munge
+chroot $CHROOT systemctl enable slurmd
+
+echo SLURMD_OPTIONS="--conf-server 10.10.10.1" >$CHROOT/etc/sysconfig/slurmd
+
+dnf -y --installroot=$CHROOT install chrony
+
+echo "server 10.10.10.10 iburst" >>$CHROOT/etc/chrony.conf
+
+dnf -y --installroot=$CHROOT install kernel-`uname -r`
+
+dnf -y --installroot=$CHROOT install lmod-ohpc
+
+wwinit database
+wwinit ssh_keys
+
+
+
+
+echo "master:/home /home nfs nfsvers=4,nodev,nosuid 0 0" >>$CHROOT/etc/fstab
+echo "master:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=4,nodev 0 0" >>$CHROOT/etc/fstab
+
+echo "master:/home /home nfs nfsvers=4,nodev,nosuid 0 0" >>$CHROOT/etc/fstab
+echo "master:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=4,nodev 0 0" >>$CHROOT/etc/fstab
+
+exportfs -a
+systemctl restart nfs-server
+systemctl enable nfs-server
+
+
+dnf -y install magpie-ohpc
+
+
+dnf -y install nhc-ohpc
+dnf -y --installroot=$CHROOT install nhc-ohpc
+
+
+
+echo "HealthCheckProgram=/usr/sbin/nhc" >> /etc/slurm/slurm.conf
+echo "HealthCheckInterval=300" >> /etc/slurm/slurm.conf 
+
+
+wwsh file import /etc/passwd
+wwsh file import /etc/group
+wwsh file import /etc/shadow
+
+wwsh file import /etc/munge/munge.key
+
+export WW_CONF=/etc/warewulf/bootstrap.conf
+echo "drivers += updates/kernel/" >>$WW_CONF
+
+wwbootstrap `uname -r`
+
+wwvnfs --chroot $CHROOT
+#####################
+
+echo "GATEWAYDEV=ens224" > /tmp/network.$$
+wwsh -y file import /tmp/network.$$ --name network
+wwsh -y file set network --path /etc/sysconfig/network --mode=0644 --uid=0
+
+wwsh -y node new node1 --ipaddr=10.10.10.100 --hwaddr=00:0C:29:06:C7:D7 -D ens224
+
+
+
+wwsh -y provision set "node1" --vnfs=rocky9.3 --bootstrap=`uname -r` --files=dynamic_hosts,passwd,group,shadow,munge.key,network
+
+#echo "DHCPDARGS=ens224" >> /etc/sysconfig/dhcpd 
+vi /etc/sysconfig/dhcpd 
+#DHCPDARGS=ens224
+
+subnet 10.10.10.0 netmask 255.255.255.0 {
+    range 10.10.10.100 10.10.10.200;
+    option routers 10.10.10.1;
+    option domain-name-servers 8.8.8.8, 8.8.4.4;
+}
+#validate
+dhcpd -t -cf /etc/dhcp/dhcpd.conf
+
+
+systemctl restart dhcpd
+wwsh pxe update
+
+
+
+
+
+
+
