@@ -1,0 +1,24 @@
+
+
+Asi es como se registra en sacct
+
+con srun --gres=gpu:1 me dice solo un dispotiviso disponible ( en vez de 2) 
+con srun --gres=gpu:2 me dice dos dispotiviso disponibles  
+#!/bin/bash
+#SBATCH --partition=power
+#SBATCH --account=usergpu
+#SBATCH --gres=gpu:2
+##SBATCH --gres=gpu:v100:0
+source ~/anaconda3/etc/profile.d/conda.sh
+conda activate pytorch
+#srun --gres=gpu:v100:0  python test2.py
+srun --gres=gpu:2  python test2.py
+srun --gres=gpu:0 python test2.py
+
+
+
+
+
+sacct -X -u user --format=Jobname,Reqgres,AllocGres
+
+sacct -X -u user --format=Jobname,ReqTres%40
